@@ -1,0 +1,79 @@
+<%- include('partials/header') %>
+
+<div class="flex flex-col md:flex-row min-h-screen bg-black">
+
+    <%- include('partials/sidebar') %>
+
+    <main class="flex-1 p-6 md:p-10">
+
+        <div class="max-w-2xl mx-auto">
+
+            <h1 class="text-3xl font-black mb-8">
+                💸 <span class="text-red-400">Withdraw Funds</span>
+            </h1>
+
+            <!-- Wallet -->
+            <div class="bg-cyan-500/10 border border-cyan-500/20 rounded-3xl p-6 mb-8 text-center">
+
+                <p class="text-gray-400 text-sm">
+                    Available Wallet Balance
+                </p>
+
+                <h2 class="text-5xl font-black text-cyan-400 mt-3">
+                    🪙 <%= user.wallet_credits %>
+                </h2>
+
+            </div>
+
+            <!-- Form -->
+            <form
+                action="/withdraw"
+                method="POST"
+                class="bg-[#111] border border-white/10 rounded-3xl p-8 space-y-6">
+
+                <div>
+                    <label class="text-xs text-gray-400">
+                        Withdraw Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        name="amount"
+                        required
+                        min="1"
+                        max="<%= user.wallet_credits %>"
+                        placeholder="Enter amount"
+                        class="w-full mt-2 bg-black border border-white/10 rounded-2xl p-4 text-white outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-400">
+                        UPI ID
+                    </label>
+
+                    <input
+                        type="text"
+                        name="upi_id"
+                        required
+                        placeholder="example@paytm"
+                        value="<%= user.upi_id %>"
+                        class="w-full mt-2 bg-black border border-white/10 rounded-2xl p-4 text-white outline-none">
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-2xl font-bold uppercase">
+
+                    Submit Withdrawal
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+<%- include('partials/footer') %>

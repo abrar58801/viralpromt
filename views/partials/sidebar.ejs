@@ -1,0 +1,60 @@
+<!-- Sidebar -->
+<aside class="w-full md:w-64 glass-card m-4 p-6 flex flex-col space-y-4" id="user_sidebar">
+    <div class="text-center pb-6 border-b border-white/10">
+        <p class="text-xs text-gray-400">Welcome,</p>
+        <h3 class="font-bold text-cyan-400">
+            <%= user.full_name %>
+        </h3>
+        <p class="text-[10px] text-gray-500">ID: #<%= user.id %>
+        </p>
+    </div>
+
+
+    <div class="space-y-2 flex-grow">
+        <a href="/dashboard" data-page="/dashboard" class="sidebar-link block p-3 rounded-lg">🏠 Dashboard</a>
+        <a href="/add-fund" data-page="/add-fund"
+            class="sidebar-link block p-3 rounded-lg hover:bg-white/5 transition">💰 Add Fund</a>
+        <a href="/withdraw" class="block p-3 rounded-lg hover:bg-white/5 transition">💸 Withdraw</a>
+        <a href="/transactions" data-page="/transactions"
+            class="sidebar-link block p-3 rounded-lg hover:bg-white/5 transition">🔀 Transactions</a>
+        <a href="/my-unlocks-list" data-page="/my-unlocks-list"
+            class="sidebar-link block p-3 rounded-lg hover:bg-white/5 transition">🔓 My
+            Unlocks</a>
+        <a href="/change-password" class="sidebar-link block p-3 rounded-lg hover:bg-white/5 transition">
+            🔐 Change Password
+        </a>
+        <a href="/refer-earn" data-page="/refer-earn"
+            class="sidebar-link block p-3 rounded-lg hover:bg-white/5 transition">🎁 Refer & Earn</a>
+        <a href="/support" data-page="/support" class="sidebar-link block p-3 rounded-lg hover:bg-white/5 transition">📞
+            Support</a>
+    </div>
+
+    <div class="pt-6 border-t border-white/10">
+        <div class="bg-black/40 p-4 rounded-xl text-center mb-4">
+            <p class="text-xs text-gray-400">Available Credits</p>
+            <h2 class="text-2xl font-black text-cyan-400">🪙 <%= user.wallet_credits %>
+            </h2>
+        </div>
+        <a href="/auth/logout" class="block text-center text-red-400 text-sm hover:underline">Logout</a>
+    </div>
+</aside>
+
+<script>
+
+    const currentPath = window.location.pathname;
+
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    sidebarLinks.forEach(link => {
+
+        const page = link.getAttribute('data-page');
+
+        if (currentPath === page) {
+
+            link.classList.add('active');
+
+        }
+
+    });
+
+</script>

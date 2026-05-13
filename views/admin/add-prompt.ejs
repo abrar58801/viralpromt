@@ -1,0 +1,254 @@
+<%- include('header') %>
+
+    <div class="flex flex-col md:flex-row min-h-screen bg-black">
+
+        <%- include('sidebar') %>
+
+            <!-- Main -->
+            <main class="flex-1 p-6 md:p-10">
+
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+
+                    <div>
+
+                        <h1 class="text-2xl font-bold text-white uppercase tracking-tighter">
+
+                            Add
+                            <span class="text-red-500">
+                                New Prompt
+                            </span>
+
+                        </h1>
+
+                        <p class="text-gray-500 mt-2 text-sm">
+
+                            Upload new viral AI prompt design.
+
+                        </p>
+
+                    </div>
+
+                    <!-- Back -->
+                    <a href="/admin/prompts"
+                        class="border border-white/10 hover:bg-white/5 px-6 py-3 rounded-2xl font-bold uppercase tracking-widest text-sm transition">
+
+                        ← Back
+                    </a>
+
+                </div>
+
+                <!-- Form -->
+                <div class="bg-[#111] p-6 md:p-8 border border-white/5 rounded-2xl">
+
+                    <h3 class="text-xs font-bold mb-6 uppercase tracking-widest text-red-500">
+
+                        Upload New Design
+
+                    </h3>
+
+                    <form action="/admin/add-prompt" method="POST" enctype="multipart/form-data"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Title -->
+                        <input type="text" name="title" placeholder="Title (e.g. 3D Instagram Art)" required
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+                        <!-- Credits -->
+                        <input type="number" name="price_credits" placeholder="Price (Credits)" required
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+                        <!-- Type -->
+                        <select name="type" id="promptType" required
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+                            <option value="">
+                                Prompt Type
+                            </option>
+
+                            <option value="image">
+                                Image
+                            </option>
+
+                            <option value="video">
+                                Video
+                            </option>
+
+                        </select>
+
+                        <!-- Views -->
+                        <input type="number" name="views" placeholder="Total Views" required
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+                        <!-- Media Section -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-full">
+
+                            <!-- Before -->
+                            <div class="p-4 border border-dashed border-white/10 rounded-xl bg-white/5">
+
+                                <label class="text-[10px] text-gray-500 uppercase block mb-3">
+
+                                    Before Media
+
+                                </label>
+
+                                <!-- Image Upload -->
+                                <div id="beforeImageBox">
+
+                                    <input type="file" name="before_image" class="text-[10px] text-gray-400 w-full">
+
+                                </div>
+
+                                <!-- Video URL -->
+                                <div id="beforeVideoBox" class="hidden">
+
+                                    <input type="url" name="before_video" placeholder="Before Video URL"
+                                        class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none">
+
+                                </div>
+
+                            </div>
+
+                            <!-- After -->
+                            <div class="p-4 border border-dashed border-white/10 rounded-xl bg-white/5">
+
+                                <label class="text-[10px] text-gray-500 uppercase block mb-3">
+
+                                    After Media
+
+                                </label>
+
+                                <!-- Image Upload -->
+                                <div id="afterImageBox">
+
+                                    <input type="file" name="after_image" class="text-[10px] text-gray-400 w-full">
+
+                                </div>
+
+                                <!-- Video URL -->
+                                <div id="afterVideoBox" class="hidden">
+
+                                    <input type="url" name="after_video" placeholder="After Video URL"
+                                        class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Description -->
+                        <textarea name="description" placeholder="Paste the actual prompt here..." required
+                            class="col-span-full bg-white/5 border border-white/10 p-4 rounded-xl h-40 text-white outline-none focus:border-red-500"></textarea>
+
+
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-red-500">
+                            How To Use
+                        </h3>
+
+                        <!-- how_to_use -->
+                        <textarea name="how_to_use" placeholder="Enter How To Use" required
+                            class="col-span-full bg-white/5 border border-white/10 p-4 rounded-xl h-40 text-white outline-none focus:border-red-500"></textarea>
+
+                        <!-- Submit -->
+                        <button type="submit"
+                            class="col-span-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-black text-white uppercase tracking-[2px] transition-all shadow-lg active:scale-95">
+
+                            PUBLISH PROMPT
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </main>
+
+    </div>
+
+    <script>
+
+        const promptType =
+            document.getElementById(
+                'promptType'
+            );
+
+        const beforeImageBox =
+            document.getElementById(
+                'beforeImageBox'
+            );
+
+        const afterImageBox =
+            document.getElementById(
+                'afterImageBox'
+            );
+
+        const beforeVideoBox =
+            document.getElementById(
+                'beforeVideoBox'
+            );
+
+        const afterVideoBox =
+            document.getElementById(
+                'afterVideoBox'
+            );
+
+        promptType.addEventListener(
+            'change',
+            function () {
+
+                // VIDEO
+                if (
+                    this.value === 'video'
+                ) {
+
+                    beforeImageBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                    afterImageBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                    beforeVideoBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                    afterVideoBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                }
+
+                // IMAGE
+                else {
+
+                    beforeImageBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                    afterImageBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                    beforeVideoBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                    afterVideoBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                }
+
+            });
+
+    </script>

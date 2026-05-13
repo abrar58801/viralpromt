@@ -1,0 +1,262 @@
+<%- include('partials/header') %>
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+
+        <%- include('partials/sidebar') %>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-4 md:p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-2xl font-bold">Latest <span class="text-cyan-400">Prompts</span></h1>
+                    <!-- <div class="flex space-x-2">
+                        <select class="bg-black border border-white/20 rounded-md text-xs p-2 outline-none">
+                            <option>Newest First</option>
+                            <option>Most Viewed</option>
+                        </select>
+                    </div> -->
+                </div>
+
+                <!-- Category Switcher -->
+                <div class="flex justify-center space-x-4 mb-12">
+
+                    <a href="/dashboard/?type=image" class="btn_prompt <%= currentType === 'image'
+            ? 'btn-neon'
+            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+
+                        IMAGE PROMPT
+                    </a>
+
+                    <a href="/dashboard/?type=video" class="btn_prompt <%= currentType === 'video'
+            ? 'btn-neon'
+            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+
+                        VIDEO PROMPT
+                    </a>
+
+                </div>
+
+                <!-- Prompts Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <% if(prompts.length> 0) { %>
+                        <% prompts.forEach(prompt=> { %>
+                            <div class="glass-card p-4">
+                                <!-- Media -->
+                                <div class="flex space-x-2 mb-4">
+
+                                    <!-- ================= -->
+                                    <!-- IMAGE PROMPT -->
+                                    <!-- ================= -->
+
+                                    <% if(prompt.type==='image' ) { %>
+
+                                        <!-- Before -->
+                                        <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                            <p class="text-[10px] text-center bg-gray-800">
+
+                                                BEFORE
+
+                                            </p>
+
+                                            <img src="/uploads/<%= prompt.before_image %>" alt="Before"
+                                                class="w-full h-40 object-cover">
+
+                                        </div>
+
+                                        <!-- After -->
+                                        <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                            <p class="text-[10px] text-center bg-cyan-900">
+
+                                                AFTER
+
+                                            </p>
+
+                                            <img src="/uploads/<%= prompt.after_image %>" alt="After"
+                                                class="w-full h-40 object-cover">
+
+                                        </div>
+
+                                        <% } %>
+
+                                            <!-- ================= -->
+                                            <!-- VIDEO PROMPT -->
+                                            <!-- ================= -->
+
+                                            <% if(prompt.type==='video' ) { %>
+
+                                                <!-- Before -->
+                                                <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                                    <p class="text-[10px] text-center bg-gray-800">
+
+                                                        BEFORE
+
+                                                    </p>
+
+                                                    <video src="<%= prompt.before_video %>" controls muted playsinline
+                                                        class="w-full h-40 object-cover bg-black">
+                                                    </video>
+
+                                                </div>
+
+                                                <!-- After -->
+                                                <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                                    <p class="text-[10px] text-center bg-cyan-900">
+
+                                                        AFTER
+
+                                                    </p>
+
+                                                    <video src="<%= prompt.after_video %>" controls muted playsinline
+                                                        class="w-full h-40 object-cover bg-black">
+                                                    </video>
+
+                                                </div>
+
+                                                <% } %>
+
+                                </div>
+
+                                <h4 class="text-sm font-semibold mb-3">
+                                    <%= prompt.title %>
+                                </h4>
+
+                                <div class="relative bg-black/60 p-3 rounded-lg text-center overflow-hidden">
+                                    <p class="text-xs blur-sm select-none">This prompt is hidden until you unlock it
+                                        with
+                                        credits.</p>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <% if(prompt.is_unlocked == 1) { %>
+
+                                            <a href="/prompt/<%= prompt.id %>"
+                                                class="bg-green-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
+
+                                                View Prompt
+                                            </a>
+
+                                        <% } else { %>
+
+                                            <button
+                                                onclick="unlockPrompt('<%= prompt.id %>')"
+                                                class="btn-neon text-xs py-1 px-4">
+
+                                                Unlock (<%= prompt.price_credits %> Credits)
+                                            </button>
+
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center mt-4 text-[10px] text-gray-500">
+                                    <span>👁️ <%= prompt.fake_views %> Views</span>
+                                    <span class="bg-white/5 px-2 py-1 rounded text-cyan-400">ID: #P-<%= prompt.id %>
+                                            </span>
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <p class="text-gray-500 col-span-full text-center py-20">No prompts found. Admin
+                                        will
+                                        add soon!</p>
+                                    <% } %>
+                </div>
+
+                <!-- Pagination -->
+                <% if (totalPages> 1) { %>
+
+                    <div class="mt-12 flex justify-center items-center gap-4">
+
+                        <!-- Previous -->
+                        <% if (currentPage> 1) { %>
+
+                            <a href="/dashboard?type=<%= currentType %>&page=<%= currentPage - 1 %>"
+                                class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                ← Back
+                            </a>
+
+                            <% } else { %>
+
+                                <button disabled
+                                    class="px-5 py-2 border border-white/5 text-gray-600 rounded-xl cursor-not-allowed">
+
+                                    ← Back
+                                </button>
+
+                                <% } %>
+
+                                    <!-- Page Counter -->
+                                    <div
+                                        class="px-5 py-2 rounded-xl bg-cyan-400 text-black font-bold shadow-lg shadow-cyan-500/20">
+
+                                        <%= currentPage %> / <%= totalPages %>
+
+                                    </div>
+
+                                    <!-- Next -->
+                                    <% if (currentPage < totalPages) { %>
+
+                                        <a href="/dashboard?type=<%= currentType %>&page=<%= currentPage + 1 %>"
+                                            class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                            Next →
+                                        </a>
+
+                                        <% } else { %>
+
+                                            <button disabled
+                                                class="px-5 py-2 border border-white/5 text-gray-600 rounded-xl cursor-not-allowed">
+
+                                                Next →
+                                            </button>
+
+                                            <% } %>
+
+                    </div>
+
+                    <% } %>
+            </main>
+    </div>
+
+    <script>
+        async function unlockPrompt(id) {
+
+            const confirmUnlock = confirm(
+                'Are you sure? Credits will be deducted.'
+            );
+
+            if (!confirmUnlock) return;
+
+            try {
+
+                const response = await fetch('/unlock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt_id: id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+
+                    window.location.href = data.redirect;
+
+                } else {
+
+                    alert(data.message);
+                }
+
+            } catch (err) {
+
+                alert('Something went wrong');
+            }
+        }
+    </script>
+
+    <%- include('partials/footer') %>

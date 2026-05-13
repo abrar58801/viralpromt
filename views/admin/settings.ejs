@@ -1,0 +1,459 @@
+<%- include('header') %>
+
+    <div class="flex flex-col md:flex-row min-h-screen bg-black">
+
+        <%- include('sidebar') %>
+
+            <main class="flex-1 p-6 md:p-10">
+
+                <!-- Heading -->
+                <div class="mb-10">
+
+                    <h1 class="text-3xl font-black text-white uppercase tracking-tight">
+
+                        Website
+                        <span class="text-red-500">
+                            Settings
+                        </span>
+
+                    </h1>
+
+                    <p class="text-gray-500 mt-2">
+
+                        Manage website configuration,
+                        payment gateway,
+                        support system,
+                        popup controls,
+                        and APK settings.
+
+                    </p>
+
+                </div>
+
+                <!-- Form -->
+                <form action="/admin/settings" method="POST" enctype="multipart/form-data" class="space-y-8">
+
+                    <!-- ================= -->
+                    <!-- Website Settings -->
+                    <!-- ================= -->
+
+                    <div class="bg-[#111] border border-white/5 rounded-3xl p-6 md:p-8">
+
+                        <h2 class="text-red-500 text-sm uppercase tracking-[3px] font-black mb-8">
+
+                            Website Settings
+
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- Site Title -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Site Title
+
+                                </label>
+
+                                <input type="text" name="site_title" value="<%= settings.site_title || '' %>"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+
+                            </div>
+
+                            <!-- Logo -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Header Logo
+
+                                </label>
+
+                                <input type="file" name="header_logo"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-gray-400">
+
+                                <% if(settings.header_logo) { %>
+
+                                    <img src="/uploads/<%= settings.header_logo %>"
+                                        class="h-14 mt-4 rounded-xl border border-white/10">
+
+                                    <% } %>
+
+                            </div>
+
+                            <!-- Description -->
+                            <div class="md:col-span-2">
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    SEO Description
+
+                                </label>
+
+                                <textarea name="site_description" rows="4"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500"><%= settings.site_description || '' %></textarea>
+
+                            </div>
+
+                            <!-- SEO Tags -->
+                            <div class="md:col-span-2">
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    SEO Tags
+
+                                </label>
+
+                                <input type="text" name="seo_tags" value="<%= settings.seo_tags || '' %>"
+                                    placeholder="ai prompts, viral prompts, chatgpt prompts"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+
+                            </div>
+
+                            <!-- APK URL -->
+                            <div class="md:col-span-2">
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    APK Download URL
+
+                                </label>
+
+                                <input type="text" name="apk_url" value="<%= settings.apk_url || '' %>"
+                                    placeholder="https://yourdomain.com/app.apk"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ================= -->
+                    <!-- Payment Settings -->
+                    <!-- ================= -->
+
+                    <div class="bg-[#111] border border-red-500/10 rounded-3xl p-6 md:p-8">
+
+                        <h2 class="text-red-500 text-sm uppercase tracking-[3px] font-black mb-8">
+
+                            Payment Settings
+
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- Min Deposit -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Minimum Deposit
+
+                                </label>
+
+                                <input type="number" name="min_deposit" value="<%= settings.min_deposit || 50 %>"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+
+                            </div>
+
+                            <!-- Paytm MID -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Paytm MID
+
+                                </label>
+
+                                <input type="text" name="paytm_mid" value="<%= settings.paytm_mid || '' %>"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+
+                            </div>
+
+                            <!-- Paytm QR -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+                                    QR
+                                </label>
+
+                                <input type="file" name="paytm_qr"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-gray-400">
+
+                                <% if(settings.paytm_qr) { %>
+
+                                    <img src="/uploads/<%= settings.paytm_qr %>"
+                                        class="h-24 mt-4 rounded-xl border border-white/10">
+
+                                    <% } %>
+
+                            </div>
+
+                            <!-- paytm_mkey -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Paytm mkey
+
+                                </label>
+
+                                <input type="text" name="paytm_mkey" value="<%= settings.paytm_mkey || '' %>"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+
+                            </div>
+
+                            
+                            <!-- bharatpe_mid -->
+                            <div>
+                                <label class="text-xs text-gray-400 block mb-2">
+                                    Bharatpe MID
+                                </label>
+                                <input type="text" name="bharatpe_mid" value="<%= settings.bharatpe_mid || '' %>"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+                            </div>
+
+                            <!-- bharatpe_token -->
+                            <div>
+                                <label class="text-xs text-gray-400 block mb-2">
+                                    Bharatpe Token
+                                </label>
+                                <input type="text" name="bharatpe_token" value="<%= settings.bharatpe_token || '' %>"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-red-500">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ================= -->
+                    <!-- Support Settings -->
+                    <!-- ================= -->
+
+                    <div class="bg-[#111] border border-cyan-500/10 rounded-3xl p-6 md:p-8">
+
+                        <h2 class="text-cyan-400 text-sm uppercase tracking-[3px] font-black mb-8">
+
+                            Support Settings
+
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- Email -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Support Email
+
+                                </label>
+
+                                <input type="email" name="contact_email" value="<%= settings.contact_email || '' %>"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-cyan-400">
+
+                            </div>
+
+                            <!-- Phone -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Contact Number
+
+                                </label>
+
+                                <input type="text" name="contact_call" value="<%= settings.contact_call || '' %>"
+                                    placeholder="+91 9876543210"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-cyan-400">
+
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    WhatsApp Link
+
+                                </label>
+
+                                <input type="text" name="whatsapp_link" value="<%= settings.whatsapp_link || '' %>"
+                                    placeholder="https://wa.me/919999999999"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-cyan-400">
+
+                            </div>
+
+                            <!-- Telegram -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Telegram Link
+
+                                </label>
+
+                                <input type="text" name="telegram_link" value="<%= settings.telegram_link || '' %>"
+                                    placeholder="https://t.me/viralprompt"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-cyan-400">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ================= -->
+                    <!-- Notification Popup -->
+                    <!-- ================= -->
+
+                    <div class="bg-[#111] border border-yellow-500/10 rounded-3xl p-6 md:p-8">
+
+                        <h2 class="text-yellow-400 text-sm uppercase tracking-[3px] font-black mb-8">
+
+                            Notification Popup
+
+                        </h2>
+
+                        <div class="space-y-6">
+
+                            <!-- Status -->
+                            <div class="flex items-center gap-4">
+
+                                <label class="text-sm text-white font-semibold">
+
+                                    Popup Status
+
+                                </label>
+
+                                <label class="relative inline-flex items-center cursor-pointer">
+
+                                    <input type="checkbox" name="notification_status" value="1"
+                                        <%=settings.notification_status==1 ? 'checked' : '' %>
+                                    class="sr-only peer">
+
+                                    <div
+                                        class="w-14 h-8 bg-gray-700 rounded-full peer peer-checked:bg-yellow-400 transition-all">
+                                    </div>
+
+                                    <div
+                                        class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-all peer-checked:translate-x-6">
+                                    </div>
+
+                                </label>
+
+                                <span class="text-xs text-gray-400">
+
+                                    Enable / Disable popup
+
+                                </span>
+
+                            </div>
+
+                            <!-- Title -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Notification Title
+
+                                </label>
+
+                                <input type="text" name="notification_title"
+                                    value="<%= settings.notification_title || '' %>"
+                                    placeholder="🔥 New Viral Prompt Released"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-400">
+
+                            </div>
+
+                            <!-- Text -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Notification Text
+
+                                </label>
+
+                                <textarea name="notification_text" rows="5"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-400"><%= settings.notification_text || '' %></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ================= -->
+                    <!-- Extra Settings -->
+                    <!-- ================= -->
+
+                    <div class="bg-[#111] border border-purple-500/10 rounded-3xl p-6 md:p-8">
+
+                        <h2 class="text-purple-400 text-sm uppercase tracking-[3px] font-black mb-8">
+
+                            Extra Settings
+
+                        </h2>
+
+                        <div class="grid grid-cols-1 gap-6">
+
+                            <!-- Refer Bonus -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    Refer & Earn Percentage
+
+                                </label>
+
+                                <div class="relative">
+
+                                    <input type="number" name="refer_percent"
+                                        value="<%= settings.refer_percent || 10 %>" placeholder="10"
+                                        class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-purple-400">
+
+                                    <span class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400">
+
+                                        %
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <!-- How To Use -->
+                            <div>
+
+                                <label class="text-xs text-gray-400 block mb-2">
+
+                                    How To Use Prompt
+
+                                </label>
+
+                                <textarea name="how_to_use" rows="6"
+                                    placeholder="1. Copy prompt&#10;2. Paste into ChatGPT&#10;3. Generate content"
+                                    class="w-full bg-black border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-purple-400"><%= settings.how_to_use || '' %></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit"
+                        class="bg-red-600 hover:bg-red-700 px-10 py-4 rounded-2xl font-black uppercase tracking-[3px] text-white transition-all">
+
+                        Save Settings
+
+                    </button>
+
+                </form>
+
+            </main>
+
+    </div>

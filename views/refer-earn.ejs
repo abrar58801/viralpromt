@@ -1,0 +1,552 @@
+<%- include('partials/header') %>
+
+    <div class="min-h-screen">
+
+        <% if(user) { %>
+
+            <div class="flex flex-col md:flex-row min-h-screen">
+
+                <%- include('partials/sidebar') %>
+
+                    <main class="flex-1 p-4 md:p-8">
+
+                        <% } else { %>
+
+                            <main class="max-w-7xl mx-auto px-4 py-10">
+
+                                <% } %>
+
+                                    <main class="flex-1 p-4 md:p-8">
+
+                                        <!-- Heading -->
+                                        <div
+                                            class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+
+                                            <div>
+
+                                                <h1 class="text-3xl font-black">
+                                                    🎁 <span class="text-cyan-400">Refer & Earn</span>
+                                                </h1>
+
+                                                <p class="text-gray-400 mt-2">
+                                                    Invite friends and earn bonus credits automatically.
+                                                </p>
+
+                                            </div>
+
+                                            <!-- Referral Badge -->
+                                            <div
+                                                class="bg-cyan-500/10 border border-cyan-500/20 px-5 py-3 rounded-2xl text-cyan-400 font-bold">
+
+                                                <% if(user) { %>
+
+                                                    Referral Code:
+
+                                                    <span class="text-white">
+
+                                                        <%= user.referral_code %>
+
+                                                    </span>
+
+                                                    <% } else { %>
+
+                                                        Earn
+
+                                                        <span class="text-white">
+
+                                                            <%= settings.refer_percent || 10 %>%
+
+                                                        </span>
+
+                                                        Referral Bonus
+
+                                                        <% } %>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Main Card -->
+                                        <div class="glass-card p-8">
+
+                                            <!-- Top Grid -->
+                                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                                                <!-- Left -->
+                                                <div>
+
+                                                    <h2 class="text-2xl font-bold mb-4">
+                                                        Share Your Referral Link
+                                                    </h2>
+
+                                                    <p class="text-gray-400 mb-6 leading-7">
+                                                        Every friend who joins using your referral link
+                                                        helps you earn bonus credits on successful purchases.
+                                                    </p>
+
+                                                    <!-- Referral Input -->
+                                                    <div
+                                                        class="bg-black/40 border border-cyan-500/20 rounded-2xl p-4 flex items-center gap-3">
+
+                                                        <input type="text" readonly id="refLink"
+                                                            class="bg-transparent outline-none w-full text-sm text-cyan-400">
+
+                                                        <button onclick="copyReferral()"
+                                                            class="btn-neon text-xs px-5 py-2 whitespace-nowrap">
+
+                                                            Copy
+                                                        </button>
+
+                                                    </div>
+
+                                                    <!-- Social Share -->
+                                                    <div class="flex flex-wrap gap-4 mt-6">
+
+                                                        <!-- WhatsApp -->
+                                                        <a id="whatsappShare" href="#" target="_blank"
+                                                            class="bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/20 px-5 py-3 rounded-xl flex items-center gap-3 transition">
+
+                                                            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
+                                                                class="w-5 h-5">
+
+                                                            <span class="text-sm">
+                                                                WhatsApp
+                                                            </span>
+
+                                                        </a>
+
+                                                        <!-- Telegram -->
+                                                        <a id="telegramShare" href="#" target="_blank"
+                                                            class="bg-[#229ED9]/10 hover:bg-[#229ED9]/20 border border-[#229ED9]/20 px-5 py-3 rounded-xl flex items-center gap-3 transition">
+
+                                                            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
+                                                                class="w-5 h-5">
+
+                                                            <span class="text-sm">
+                                                                Telegram
+                                                            </span>
+
+                                                        </a>
+
+                                                        <!-- Copy -->
+                                                        <button onclick="copyReferral()"
+                                                            class="bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 px-5 py-3 rounded-xl flex items-center gap-3 transition">
+
+                                                            🔗
+
+                                                            <span class="text-sm">
+                                                                Copy Link
+                                                            </span>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <!-- Right -->
+                                                <div class="bg-black/30 border border-white/5 rounded-3xl p-8">
+
+                                                    <h3 class="text-xl font-bold mb-6">
+                                                        Referral Rewards
+                                                    </h3>
+
+                                                    <div class="space-y-4">
+
+                                                        <div
+                                                            class="flex justify-between items-center bg-black/40 p-4 rounded-xl">
+
+                                                            <span class="text-gray-400">
+                                                                Referral Bonus
+                                                            </span>
+
+                                                            <span class="text-cyan-400 font-bold">
+                                                                <%= settings.refer_percent %>%
+                                                            </span>
+
+                                                        </div>
+
+                                                        <div
+                                                            class="flex justify-between items-center bg-black/40 p-4 rounded-xl">
+
+                                                            <span class="text-gray-400">
+                                                                Minimum Withdrawal
+                                                            </span>
+
+                                                            <span class="text-cyan-400 font-bold">
+                                                                🪙 100
+                                                            </span>
+
+                                                        </div>
+
+                                                        <div
+                                                            class="flex justify-between items-center bg-black/40 p-4 rounded-xl">
+
+                                                            <span class="text-gray-400">
+                                                                Active Status
+                                                            </span>
+
+                                                            <span
+                                                                class="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                                ACTIVE
+                                                            </span>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                            <% if(user) { %>
+
+                                                <!-- Stats -->
+                                                <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mt-10">
+
+                                                    <!-- Total Referrals -->
+                                                    <div class="glass-card p-6 text-center border border-cyan-500/10">
+
+                                                        <div class="text-4xl mb-3">
+                                                            👥
+                                                        </div>
+
+                                                        <h3 class="text-gray-400 text-sm">
+                                                            Total Referrals
+                                                        </h3>
+
+                                                        <h2 class="text-3xl font-black text-cyan-400 mt-2">
+
+                                                            <%= totalReferrals || 0 %>
+
+                                                        </h2>
+
+                                                    </div>
+
+                                                    <!-- Earned -->
+                                                    <div class="glass-card p-6 text-center border border-cyan-500/10">
+
+                                                        <div class="text-4xl mb-3">
+                                                            🪙
+                                                        </div>
+
+                                                        <h3 class="text-gray-400 text-sm">
+                                                            Earned Credits
+                                                        </h3>
+
+                                                        <h2 class="text-3xl font-black text-cyan-400 mt-2">
+
+                                                            <%= earnedCredits || 0 %>
+
+                                                        </h2>
+
+                                                    </div>
+
+                                                    <!-- Today's -->
+                                                    <div class="glass-card p-6 text-center border border-cyan-500/10">
+
+                                                        <div class="text-4xl mb-3">
+                                                            ⚡
+                                                        </div>
+
+                                                        <h3 class="text-gray-400 text-sm">
+                                                            Today's Referrals
+                                                        </h3>
+
+                                                        <h2 class="text-3xl font-black text-cyan-400 mt-2">
+
+                                                            <%= todayReferrals || 0 %>
+
+                                                        </h2>
+
+                                                    </div>
+
+                                                    <!-- Rank -->
+                                                    <div class="glass-card p-6 text-center border border-cyan-500/10">
+
+                                                        <div class="text-4xl mb-3">
+                                                            🏆
+                                                        </div>
+
+                                                        <h3 class="text-gray-400 text-sm">
+                                                            Referral Rank
+                                                        </h3>
+
+                                                        <h2 class="text-3xl font-black text-cyan-400 mt-2">
+
+                                                            #<%= referralRank || 0 %>
+
+                                                        </h2>
+
+                                                    </div>
+
+                                                </div>
+
+                                        </div>
+
+                                        <% } else { %>
+
+                                            <!-- Guest CTA -->
+                                            <div
+                                                class="mt-10 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-3xl p-10 text-center">
+
+                                                <div class="text-7xl mb-6">
+
+                                                    🎁
+
+                                                </div>
+
+                                                <h2 class="text-4xl font-black mb-4">
+
+                                                    Start Earning Today
+
+                                                </h2>
+
+                                                <p class="text-gray-400 max-w-2xl mx-auto leading-8 mb-8">
+
+                                                    Create your account and earn
+                                                    referral bonuses automatically
+                                                    when friends join and purchase.
+
+                                                </p>
+
+                                                <a href="/register"
+                                                    class="inline-flex items-center justify-center bg-cyan-500 hover:bg-cyan-400 text-black px-10 py-5 rounded-2xl font-black uppercase tracking-[3px] transition-all">
+
+                                                    Join Now
+
+                                                </a>
+
+                                            </div>
+
+                                            <% } %>
+
+                                                <% if(user) { %>
+
+                                                    <!-- Referral Users -->
+                                                    <div class="mt-12">
+
+                                                        <div class="flex justify-between items-center mb-6">
+
+                                                            <h2 class="text-2xl font-bold">
+                                                                Referral History
+                                                            </h2>
+
+                                                            <span class="text-gray-500 text-sm">
+                                                                Latest joined users
+                                                            </span>
+
+                                                        </div>
+
+                                                        <div class="overflow-x-auto">
+
+                                                            <table class="w-full">
+
+                                                                <thead>
+
+                                                                    <tr
+                                                                        class="border-b border-white/10 text-gray-400 text-sm">
+
+                                                                        <th class="text-left p-4">
+                                                                            User
+                                                                        </th>
+
+                                                                        <th class="text-left p-4">
+                                                                            Joined Date
+                                                                        </th>
+
+                                                                        <th class="text-left p-4">
+                                                                            Status
+                                                                        </th>
+
+                                                                        <th class="text-left p-4">
+                                                                            Reward
+                                                                        </th>
+
+                                                                    </tr>
+
+                                                                </thead>
+
+                                                                <tbody>
+
+                                                                    <% if(referrals && referrals.length> 0) { %>
+
+                                                                        <% referrals.forEach(ref=> { %>
+
+                                                                            <tr class="border-b border-white/5">
+
+                                                                                <td class="p-4">
+
+                                                                                    <div
+                                                                                        class="flex items-center gap-3">
+
+                                                                                        <div
+                                                                                            class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold">
+
+                                                                                            <%= ref.full_name.charAt(0)
+                                                                                                %>
+
+                                                                                        </div>
+
+                                                                                        <div>
+
+                                                                                            <h4 class="font-semibold">
+
+                                                                                                <%= ref.full_name %>
+
+                                                                                            </h4>
+
+                                                                                            <p
+                                                                                                class="text-xs text-gray-500">
+
+                                                                                                <%= ref.email %>
+
+                                                                                            </p>
+
+                                                                                        </div>
+
+                                                                                    </div>
+
+                                                                                </td>
+
+                                                                                <td class="p-4 text-gray-400 text-sm">
+
+                                                                                    <%= ref.created_at %>
+
+                                                                                </td>
+
+                                                                                <td class="p-4">
+
+                                                                                    <span
+                                                                                        class="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                                                        Active
+                                                                                    </span>
+
+                                                                                </td>
+
+                                                                                <td class="p-4 text-cyan-400 font-bold">
+
+                                                                                    🪙 <%= ref.amount %>
+
+                                                                                </td>
+
+                                                                            </tr>
+
+                                                                            <% }) %>
+
+                                                                                <% } else { %>
+
+                                                                                    <tr>
+
+                                                                                        <td colspan="4"
+                                                                                            class="text-center py-16 text-gray-500">
+
+                                                                                            No referrals yet.
+
+                                                                                        </td>
+
+                                                                                    </tr>
+
+                                                                                    <% } %>
+
+                                                                </tbody>
+
+                                                            </table>
+
+                                                            <% if(totalPages> 1) { %>
+                                                                <div class="flex justify-center gap-4 mt-8">
+
+                                                                    <% if(currentPage> 1) { %>
+                                                                        <a href="/refer-earn?page=<%= currentPage - 1 %>"
+                                                                            class="px-5 py-2 rounded-xl bg-white/10 hover:bg-cyan-500/20">
+                                                                            Previous
+                                                                        </a>
+                                                                        <% } %>
+
+                                                                            <span
+                                                                                class="px-5 py-2 text-cyan-400 font-bold">
+                                                                                Page <%= currentPage %> of <%=
+                                                                                        totalPages %>
+                                                                            </span>
+
+                                                                            <% if(currentPage < totalPages) { %>
+                                                                                <a href="/refer-earn?page=<%= currentPage + 1 %>"
+                                                                                    class="px-5 py-2 rounded-xl bg-white/10 hover:bg-cyan-500/20">
+                                                                                    Next
+                                                                                </a>
+                                                                                <% } %>
+
+                                                                </div>
+                                                                <% } %>
+
+                                                        </div>
+
+                                                    </div>
+                                                    <% } %>
+
+            </div>
+
+            </main>
+
+            <% if(user) { %>
+
+    </div>
+
+    <% } %>
+
+        <script>
+
+            function copyReferral() {
+
+                const copyText = document.getElementById("refLink");
+
+                copyText.select();
+
+                copyText.setSelectionRange(0, 99999);
+
+                navigator.clipboard.writeText(copyText.value);
+
+                alert("Referral link copied!");
+            }
+
+        </script>
+
+        <script>
+            const baseUrl = window.location.origin;
+
+            <% if (user) { %>
+                document.getElementById("refLink").value =
+                `${baseUrl}/register?ref=<%= user.referral_code %>`;
+            <% } else { %>
+                document.getElementById("refLink").value =
+                `${baseUrl}/register`;
+            <% } %>
+
+                function copyReferral() {
+                    const copyText = document.getElementById("refLink");
+
+                    navigator.clipboard.writeText(copyText.value);
+
+                    alert("Referral link copied!");
+                }
+
+            // Update social links
+            const shareUrl = document.getElementById("refLink").value;
+
+            const whatsappBtn = document.getElementById("whatsappShare");
+            const telegramBtn = document.getElementById("telegramShare");
+
+            if (whatsappBtn) {
+                whatsappBtn.href =
+                    `https://wa.me/?text=${encodeURIComponent(shareUrl)}`;
+            }
+
+            if (telegramBtn) {
+                telegramBtn.href =
+                    `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}`;
+            }
+        </script>
+
+        <%- include('partials/footer') %>

@@ -1,0 +1,197 @@
+:root {
+  --primary-bg: radial-gradient(circle at center, #001f3f 0%, #000000 100%);
+  --neon-blue: #00f2ff;
+  --neon-purple: #bc13fe;
+  --glass: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background: var(--primary-bg);
+  color: white;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  transition: 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+  border-color: var(--neon-blue);
+}
+
+/* Neon Glow Buttons */
+.btn-neon {
+  background: transparent;
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 10px 25px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--neon-blue);
+  transition: 0.3s;
+}
+
+.btn-neon:hover {
+  background: var(--neon-blue);
+  color: black;
+  box-shadow: 0 0 30px var(--neon-blue);
+}
+
+/* Blur Effect for Locked Prompts */
+.blur-text {
+  filter: blur(8px);
+  user-select: none;
+}
+
+.nav-header {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--neon-blue);
+}
+
+.profile_btn {
+  padding: 8px 15px;
+}
+
+#user_sidebar .active {
+  color: rgb(34 211 238 / 1) !important;
+  background-color: rgb(6 182 212 / 0.1) !important;
+  border-color: rgb(6 182 212 / 0.2) !important;
+  border-width: 1px !important;
+}
+
+.btn_prompt {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border-radius: 14px;
+  transition: 0.3s;
+  border: 1px solid transparent;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.mobile-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(34, 211, 238, 0.2);
+  color: #22d3ee;
+}
+
+@keyframes popupAnimation {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-popup {
+  animation: popupAnimation 0.4s ease;
+}
+
+#admin_nav {
+  margin-left: 280px;
+}
+
+#adminSidebar {
+  margin-top: -80px;
+}
+
+.admin-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  transition: 0.3s;
+  font-size: 14px;
+}
+
+.admin-dropdown-link:hover,
+.admin-dropdown-link.active {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.admin-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  transition: 0.3s;
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.user_site_logo{
+  height: 50px;
+}
+
+.admin-link:hover,
+.admin-link.active {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+@media (max-width: 768px) {
+  .text-2xl {
+    font-size: 1rem !important;
+  }
+  .text-sm {
+    font-size: 0.7rem !important;
+  }
+
+  .btn-neon {
+    padding: 8px;
+  }
+
+  .profile_btn {
+    padding: 5px 10px;
+  }
+
+  .nav-header {
+    padding: 10px 5%;
+  }
+
+  #user_sidebar {
+    display: none !important;
+  }
+
+  #admin_nav {
+    margin-left: 0px;
+  }
+
+  #adminSidebar {
+    margin-top: 0px;
+  }
+}

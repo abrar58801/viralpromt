@@ -1,0 +1,316 @@
+<%- include('partials/header') %>
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+
+        <%- include('partials/sidebar') %>
+
+            <!-- Main -->
+            <main class="flex-1 p-4 md:p-8">
+
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+
+                    <div>
+
+                        <h1 class="text-3xl font-black">
+                            💳 <span class="text-cyan-400">Transactions</span>
+                        </h1>
+
+                        <p class="text-gray-400 mt-2">
+                            View all your deposits, unlocks and referral earnings.
+                        </p>
+
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="bg-cyan-500/10 border border-cyan-500/20 px-5 py-3 rounded-2xl text-cyan-400 font-bold">
+
+                        Total:
+                        <span class="text-white">
+                            <%= totalTransactions %>
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- Filter -->
+                <div class="flex flex-wrap gap-3 mb-8">
+
+                    <a href="/transactions?type=all" class="<%= currentType === 'all'
+                ? 'btn-neon'
+                : 'flex items-center border border-white/10 px-5 py-2 rounded-full' %>">
+
+                        All
+                    </a>
+
+                    <a href="/transactions?type=deposit" class="<%= currentType === 'deposit'
+                ? 'btn-neon'
+                : 'flex items-center border border-white/10 px-5 py-2 rounded-full' %>">
+
+                        Deposits
+                    </a>
+
+                    <a href="/transactions?type=withdraw" class="<%= currentType === 'withdraw'
+                ? 'btn-neon'
+                : 'flex items-center border border-white/10 px-5 py-2 rounded-full' %>">
+
+                        Withdraw
+                    </a>
+
+                    <a href="/transactions?type=unlock" class="<%= currentType === 'unlock'
+                ? 'btn-neon'
+                : 'flex items-center border border-white/10 px-5 py-2 rounded-full' %>">
+
+                        Unlocks
+                    </a>
+
+                    <a href="/transactions?type=referral" class="<%= currentType === 'referral'
+                ? 'btn-neon'
+                : 'flex items-center border border-white/10 px-5 py-2 rounded-full' %>">
+
+                        Referral
+                    </a>
+
+                </div>
+
+                <!-- Table -->
+                <div class="glass-card overflow-hidden">
+
+                    <div class="overflow-x-auto">
+
+                        <table class="w-full">
+
+                            <thead>
+
+                                <tr class="border-b border-white/10 bg-black/20">
+
+                                    <th class="text-left p-5 text-sm text-gray-400">
+                                        Order ID
+                                    </th>
+
+                                    <th class="text-left p-5 text-sm text-gray-400">
+                                        Type
+                                    </th>
+
+                                    <th class="text-left p-5 text-sm text-gray-400">
+                                        Amount
+                                    </th>
+
+                                    <th class="text-left p-5 text-sm text-gray-400">
+                                        Credits
+                                    </th>
+
+                                    <th class="text-left p-5 text-sm text-gray-400">
+                                        Status
+                                    </th>
+
+                                    <th class="text-left p-5 text-sm text-gray-400">
+                                        Date
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <% if(transactions.length> 0) { %>
+
+                                    <% transactions.forEach(item=> { %>
+
+                                        <tr class="border-b border-white/5 hover:bg-white/5 transition">
+
+                                            <!-- Order -->
+                                            <td class="p-5">
+
+                                                <div class="font-semibold text-sm">
+
+                                                    <%= item.order_id || 'N/A' %>
+
+                                                </div>
+
+                                                <% if(item.utr_number) { %>
+
+                                                    <div class="text-xs text-gray-500 mt-1">
+
+                                                        UTR:
+                                                        <%= item.utr_number %>
+
+                                                    </div>
+
+                                                    <% } %>
+
+                                            </td>
+
+                                            <!-- Type -->
+                                            <td class="p-5">
+
+                                                <% if(item.type==='deposit' ) { %>
+
+                                                    <span
+                                                        class="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                        Deposit
+                                                    </span>
+
+                                                    <% } else if(item.type==='withdraw' ) { %>
+
+                                                        <span
+                                                            class="bg-orange-500/10 text-orange-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                            Withdraw
+                                                        </span>
+
+                                                        <% } else if(item.type==='unlock' ) { %>
+
+                                                            <span
+                                                                class="bg-red-500/10 text-red-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                                Unlock
+                                                            </span>
+
+                                                            <% } else if(item.type==='referral' ) { %>
+
+                                                                <span
+                                                                    class="bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                                    Referral
+                                                                </span>
+
+                                                                <% } %>
+
+                                            </td>
+
+                                            <!-- Amount -->
+                                            <td class="p-5 font-bold">
+
+                                                <% if(item.type==='withdraw' || item.type==='unlock' ) { %>
+                                                    <span class="text-red-400 font-bold">
+                                                        - ₹ <%= item.amount %>
+                                                    </span>
+                                                    <% } else { %>
+                                                        <span class="text-green-400 font-bold">
+                                                            + ₹ <%= item.amount %>
+                                                        </span>
+                                                        <% } %>
+                                            </td>
+
+                                            <!-- Credits -->
+                                            <td class="p-5 text-cyan-400 font-bold">
+
+                                                🪙 <%= item.credits_added %>
+
+                                            </td>
+
+                                            <!-- Status -->
+                                            <td class="p-5">
+
+                                                <% if(item.status==='success' ) { %>
+
+                                                    <span
+                                                        class="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                        Success
+                                                    </span>
+
+                                                    <% } %>
+
+                                                        <% if(item.status==='pending' ) { %>
+
+                                                            <span
+                                                                class="bg-yellow-500/10 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                                Pending
+                                                            </span>
+
+                                                            <% } %>
+
+                                                                <% if(item.status==='failed' ) { %>
+
+                                                                    <span
+                                                                        class="bg-red-500/10 text-red-400 px-3 py-1 rounded-full text-xs font-bold">
+
+                                                                        Failed
+                                                                    </span>
+
+                                                                    <% } %>
+
+                                            </td>
+
+                                            <!-- Date -->
+                                            <td class="p-5 text-sm text-gray-500">
+                                                <%= new Date(item.created_at).toLocaleString('en-IN', { day: '2-digit' ,
+                                                    month: 'short' , year: 'numeric' , hour: '2-digit' ,
+                                                    minute: '2-digit' , second: '2-digit' }) %>
+                                            </td>
+
+                                        </tr>
+
+                                        <% }) %>
+
+                                            <% } else { %>
+
+                                                <tr>
+
+                                                    <td colspan="6" class="text-center py-20 text-gray-500">
+
+                                                        No transactions found.
+
+                                                    </td>
+
+                                                </tr>
+
+                                                <% } %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <!-- Pagination -->
+                <% if(totalPages> 1) { %>
+
+                    <div class="mt-10 flex justify-center items-center gap-4">
+
+                        <!-- Prev -->
+                        <% if(currentPage> 1) { %>
+
+                            <a href="/transactions?page=<%= currentPage - 1 %>&type=<%= currentType %>"
+                                class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                ← Back
+                            </a>
+
+                            <% } %>
+
+                                <!-- Count -->
+                                <div class="px-5 py-2 rounded-xl bg-cyan-400 text-black font-bold">
+
+                                    <%= currentPage %> / <%= totalPages %>
+
+                                </div>
+
+                                <!-- Next -->
+                                <% if(currentPage < totalPages) { %>
+
+                                    <a href="/transactions?page=<%= currentPage + 1 %>&type=<%= currentType %>"
+                                        class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                        Next →
+                                    </a>
+
+                                    <% } %>
+
+                    </div>
+
+                    <% } %>
+
+            </main>
+
+    </div>
+
+    <%- include('partials/footer') %>

@@ -1,0 +1,412 @@
+<%- include('partials/header') %>
+
+    <!-- Notification Popup -->
+    <% if(settings.notification_status==1) { %>
+
+        <div id="notificationPopup"
+            class="fixed bottom-4 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 z-50 hidden w-[92%] md:w-full md:max-w-sm max-w-[92%]">
+
+            <div
+                class="glass-card border border-cyan-500/20 shadow-2xl shadow-cyan-500/10 p-4 rounded-2xl flex items-start gap-3 animate-popup overflow-hidden">
+
+                <!-- Icon -->
+                <div
+                    class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-cyan-500/10 flex items-center justify-center text-xl md:text-2xl flex-shrink-0">
+
+                    🔥
+
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1">
+
+                    <!-- Title -->
+                    <h3 class="font-bold text-white text-xs md:text-sm mb-1">
+
+                        <%= settings.notification_title || 'New Viral Prompt Added' %>
+
+                    </h3>
+
+                    <!-- Text -->
+                    <p class="text-[11px] md:text-xs text-gray-400 leading-5 md:leading-6">
+
+                        <%= settings.notification_text || 'New AI prompt available now.' %>
+
+                    </p>
+
+                </div>
+
+                <!-- Close -->
+                <button onclick="closeNotification()" class="text-gray-500 hover:text-white transition">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <% } %>
+
+            <main class="max-w-7xl mx-auto px-4 py-10">
+
+                <!-- Hero Section -->
+                <section class="text-center py-20">
+
+                    <h1 class="text-5xl md:text-7xl font-black mb-4">
+                        Create Viral <span class="text-cyan-400">AI Content</span>
+                    </h1>
+
+                    <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                        Latest viral prompts for AI Images and Videos.
+                        Copy, Paste, and Go Viral!
+                    </p>
+
+                </section>
+
+                <!-- Category Switcher -->
+                <div class="flex justify-center space-x-4 mb-12">
+
+                    <a href="/?type=image" class="btn_prompt <%= currentType === 'image'
+            ? 'btn-neon'
+            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+
+                        IMAGE PROMPT
+                    </a>
+
+                    <a href="/?type=video" class="btn_prompt <%= currentType === 'video'
+            ? 'btn-neon'
+            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+
+                        VIDEO PROMPT
+                    </a>
+
+                </div>
+
+                <!-- Prompts Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <% if(prompts.length> 0) { %>
+
+                        <% prompts.forEach(prompt=> { %>
+
+                            <div class="glass-card p-4">
+
+                                <!-- Media -->
+                                <div class="flex space-x-2 mb-4">
+
+                                    <!-- ================= -->
+                                    <!-- IMAGE PROMPT -->
+                                    <!-- ================= -->
+
+                                    <% if(prompt.type==='image' ) { %>
+
+                                        <!-- Before -->
+                                        <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                            <p class="text-[10px] text-center bg-gray-800">
+
+                                                BEFORE
+
+                                            </p>
+
+                                            <img src="/uploads/<%= prompt.before_image %>" alt="Before"
+                                                class="w-full h-40 object-cover">
+
+                                        </div>
+
+                                        <!-- After -->
+                                        <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                            <p class="text-[10px] text-center bg-cyan-900">
+
+                                                AFTER
+
+                                            </p>
+
+                                            <img src="/uploads/<%= prompt.after_image %>" alt="After"
+                                                class="w-full h-40 object-cover">
+
+                                        </div>
+
+                                        <% } %>
+
+                                            <!-- ================= -->
+                                            <!-- VIDEO PROMPT -->
+                                            <!-- ================= -->
+
+                                            <% if(prompt.type==='video' ) { %>
+
+                                                <!-- Before -->
+                                                <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                                    <p class="text-[10px] text-center bg-gray-800">
+
+                                                        BEFORE
+
+                                                    </p>
+
+                                                    <video src="<%= prompt.before_video %>" controls muted playsinline
+                                                        class="w-full h-40 object-cover bg-black">
+                                                    </video>
+
+                                                </div>
+
+                                                <!-- After -->
+                                                <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                                    <p class="text-[10px] text-center bg-cyan-900">
+
+                                                        AFTER
+
+                                                    </p>
+
+                                                    <video src="<%= prompt.after_video %>" controls muted playsinline
+                                                        class="w-full h-40 object-cover bg-black">
+                                                    </video>
+
+                                                </div>
+
+                                                <% } %>
+
+                                </div>
+
+                                <!-- Title -->
+                                <h3 class="font-bold text-lg mb-3 line-clamp-1">
+                                    <%= prompt.title %>
+                                </h3>
+
+                                <!-- Prompt Lock -->
+                                <div class="relative bg-black/40 p-3 rounded-lg mb-4">
+
+                                    <p class="blur-sm select-none text-sm">
+                                        <%= prompt.prompt_text %>
+                                    </p>
+
+                                    <div class="absolute inset-0 flex items-center justify-center">
+
+                                        <% if(user) { %>
+
+                                            <% if(prompt.is_unlocked == 1) { %>
+
+                                                <a href="/prompt/<%= prompt.id %>"
+                                                    class="bg-green-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
+
+                                                    View Prompt
+                                                </a>
+
+                                            <% } else { %>
+
+                                                <button
+                                                    onclick="unlockPrompt('<%= prompt.id %>')"
+                                                    class="bg-cyan-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
+
+                                                    Unlock (<%= prompt.price_credits %> Credits)
+                                                </button>
+
+                                            <% } %>
+
+                                        <% } else { %>
+
+                                            <a href="/login"
+                                                class="bg-cyan-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
+
+                                                Login To Unlock
+                                            </a>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="flex justify-between items-center text-xs text-gray-500">
+
+                                    <span>
+                                        👁️ <%= prompt.fake_views || 0 %> Views
+                                    </span>
+
+                                    <span class="text-cyan-400">
+                                        #<%= prompt.category || 'ViralAI' %>
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <% }) %>
+
+                                <% } else { %>
+
+                                    <div class="col-span-full text-center py-20">
+
+                                        <h2 class="text-2xl font-bold text-gray-500">
+                                            No Prompts Found
+                                        </h2>
+
+                                    </div>
+
+                                    <% } %>
+
+                </div>
+
+                <!-- Pagination -->
+                <% if (totalPages> 1) { %>
+
+                    <div class="mt-16 flex justify-center items-center gap-4">
+
+                        <!-- Previous -->
+                        <% if (currentPage> 1) { %>
+
+                            <a href="/?type=<%= currentType %>&page=<%= currentPage - 1 %>"
+                                class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                ← Back
+                            </a>
+
+                            <% } else { %>
+
+                                <button disabled
+                                    class="px-5 py-2 border border-white/5 text-gray-600 rounded-xl cursor-not-allowed">
+
+                                    ← Back
+                                </button>
+
+                                <% } %>
+
+                                    <!-- Counter -->
+                                    <div
+                                        class="px-5 py-2 rounded-xl bg-cyan-400 text-black font-bold shadow-lg shadow-cyan-500/20">
+
+                                        <%= currentPage %> / <%= totalPages %>
+
+                                    </div>
+
+                                    <!-- Next -->
+                                    <% if (currentPage < totalPages) { %>
+
+                                        <a href="/?type=<%= currentType %>&page=<%= currentPage + 1 %>"
+                                            class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                            Next →
+                                        </a>
+
+                                        <% } else { %>
+
+                                            <button disabled
+                                                class="px-5 py-2 border border-white/5 text-gray-600 rounded-xl cursor-not-allowed">
+
+                                                Next →
+                                            </button>
+
+                                            <% } %>
+
+                    </div>
+
+                    <% } %>
+
+            </main>
+
+            <script>
+
+                function switchTab(type) {
+                    // Simple UI toggle logic
+                    document.getElementById('btn-image').className = type === 'image' ? 'btn-neon' : 'border border-white/20 px-8 py-2 rounded-full';
+                    document.getElementById('btn-video').className = type === 'video' ? 'btn-neon' : 'border border-white/20 px-8 py-2 rounded-full';
+                    // Logic to fetch from DB will be added in Controller step
+                }
+
+                async function unlockPrompt(id) {
+
+                    const confirmUnlock = confirm(
+                        "Are you sure? Credits will be deducted."
+                    );
+
+                    if (!confirmUnlock) return;
+
+                    try {
+
+                        const response = await fetch('/unlock', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                prompt_id: id
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+
+                            window.location.href = data.redirect;
+
+                        } else {
+
+                            alert(data.message);
+                        }
+
+                    } catch (err) {
+
+                        alert("Something went wrong");
+                    }
+                }
+            </script>
+
+            <% if(settings.notification_status==1) { %>
+
+                <script>
+
+                    const popup =
+                        document.getElementById(
+                            'notificationPopup'
+                        );
+
+                    function showNotification() {
+
+                        if (!popup) return;
+
+                        popup.classList.remove(
+                            'hidden'
+                        );
+
+                        setTimeout(() => {
+
+                            popup.classList.add(
+                                'hidden'
+                            );
+
+                        }, 5000);
+                    }
+
+                    function closeNotification() {
+
+                        if (!popup) return;
+
+                        popup.classList.add(
+                            'hidden'
+                        );
+                    }
+
+                    // First Show
+                    setTimeout(() => {
+
+                        showNotification();
+
+                    }, 2000);
+
+                    // Repeat
+                    setInterval(() => {
+
+                        showNotification();
+
+                    }, 20000);
+
+                </script>
+
+                <% } %>
+
+                    <%- include('partials/footer') %>

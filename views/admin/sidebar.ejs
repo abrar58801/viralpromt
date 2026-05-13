@@ -1,0 +1,169 @@
+<!-- Admin Sidebar -->
+<aside id="adminSidebar"
+    class="w-[280px] bg-[#111] border-r border-red-500/10 min-h-screen p-6 flex flex-col fixed lg:static top-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+
+    <!-- Top -->
+    <div class="pb-6 border-b border-white/10">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between gap-2">
+
+            <!-- Left -->
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-2xl">
+
+                    🛡️
+                </div>
+
+                <div>
+
+                    <h3 class="font-black text-red-500 uppercase tracking-widest text-sm">
+
+                        Admin Panel
+                    </h3>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        Viral Prompt Control
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Close -->
+            <button onclick="closeAdminSidebar()"
+                class="lg:hidden w-10 h-10 rounded-xl border border-white/10 bg-white/5 hover:bg-red-500/10 hover:border-red-500/20 transition flex items-center justify-center text-gray-400 hover:text-red-400">
+
+                ✕
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="space-y-2 flex-grow mt-6">
+
+        <a href="/admin/dashboard" class="admin-link">
+
+            📊 Dashboard
+        </a>
+
+        <a href="/admin/prompts" class="admin-link">
+
+            📝 Manage Prompts
+        </a>
+
+        <a href="/admin/users" class="admin-link">
+
+            👥 Manage Users
+        </a>
+
+        <a href="/admin/withdrawals" class="admin-link">
+            💸 Withdraw Requests
+        </a>
+
+        <a href="/admin/transactions" class="admin-link">
+            💳 Transactions
+        </a>
+
+        <a href="/admin/contact-messages" class="admin-link">
+
+            📩 Contact Messages
+        </a>
+
+        <a href="/admin/settings" class="admin-link">
+
+            ⚙️ Site Settings
+        </a>
+
+    </div>
+
+    <!-- Bottom -->
+    <div class="pt-6 border-t border-white/10">
+
+        <!-- Status -->
+        <div class="bg-black/40 border border-red-500/10 rounded-2xl p-4 mb-4">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        System Status
+                    </p>
+
+                    <h4 class="text-sm font-bold text-green-400 mt-1">
+                        Online
+                    </h4>
+
+                </div>
+
+                <div class="w-3 h-3 rounded-full bg-green-400 animate-pulse">
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Logout -->
+        <a href="/admin/logout"
+            class="flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-xl py-3 text-sm text-red-400 transition">
+
+            🚪 Logout System
+        </a>
+
+    </div>
+
+</aside>
+
+<!-- Mobile Overlay -->
+<div id="adminOverlay" class="hidden fixed inset-0 bg-black/70 z-40 lg:hidden">
+</div>
+
+
+<script id="v7n2xp">
+
+    // Active Menu
+    const currentPath = window.location.pathname;
+
+    document.querySelectorAll('.admin-link')
+        .forEach(link => {
+
+            if (link.getAttribute('href') === currentPath) {
+
+                link.classList.add('active');
+            }
+
+        });
+
+    // Sidebar Toggle
+    const adminSidebar =
+        document.getElementById('adminSidebar');
+
+    const adminOverlay =
+        document.getElementById('adminOverlay');
+
+    function openAdminSidebar() {
+
+        adminSidebar.classList.remove('-translate-x-full');
+
+        adminOverlay.classList.remove('hidden');
+    }
+
+    function closeAdminSidebar() {
+
+        adminSidebar.classList.add('-translate-x-full');
+
+        adminOverlay.classList.add('hidden');
+    }
+
+    adminOverlay?.addEventListener('click', () => {
+
+        closeAdminSidebar();
+
+    });
+
+</script>

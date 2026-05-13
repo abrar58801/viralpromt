@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Admin Panel - Viral Prompt
+    </title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="bg-black text-white">
+
+    <!-- Admin Navbar -->
+    <nav class="sticky top-0 z-50 border-b border-cyan-500/20 bg-black/90 backdrop-blur-xl" id="admin_nav">
+
+        <div class="max-w-[1600px] mx-auto px-4 md:px-8 h-[78px] flex items-center justify-between">
+
+            <!-- Left -->
+            <div class="flex items-center gap-4">
+
+                <!-- Mobile Toggle -->
+                <button id="adminSidebarBtn" onclick="openAdminSidebar()"
+                    class="lg:hidden w-11 h-11 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
+                    ☰
+                </button>
+
+            </div>
+
+            <!-- Right -->
+            <div class="relative">
+
+                <!-- Admin Dropdown Button -->
+                <button id="adminDropdownBtn" onclick="toggleAdminDropdown()"
+                    class="flex items-center gap-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 rounded-2xl px-4 py-2 transition">
+
+                    <!-- Avatar -->
+                    <div
+                        class="w-10 h-10 rounded-full bg-cyan-500 text-black font-black flex items-center justify-center">
+
+                        A
+                    </div>
+
+                    <!-- Info -->
+                    <div class="hidden md:block text-left">
+
+                        <h4 class="text-sm font-bold">
+                            Administrator
+                        </h4>
+
+                        <p class="text-[11px] text-gray-400">
+                            Admin
+                        </p>
+
+                    </div>
+
+                    <!-- Arrow -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+
+                </button>
+
+                <!-- Dropdown -->
+                <div id="adminDropdown"
+                    class="hidden absolute right-0 mt-4 w-64 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                    
+                    <!-- Menu -->
+                    <div class="p-2">
+                        <a href="/admin/change-password" class="admin-dropdown-link">
+                            🔐 Change Password
+                        </a>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="border-t border-white/10 p-2">
+                        <a href="/admin/logout" class="admin-dropdown-link text-red-400 hover:bg-red-500/10">
+                            🚪 Logout
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <script>
+
+        function toggleAdminDropdown() {
+
+            const dropdown =
+                document.getElementById('adminDropdown');
+
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Outside Click
+        document.addEventListener('click', function (event) {
+
+            const dropdown =
+                document.getElementById('adminDropdown');
+
+            const button =
+                document.getElementById('adminDropdownBtn');
+
+            if (
+                dropdown &&
+                button &&
+                !dropdown.contains(event.target) &&
+                !button.contains(event.target)
+            ) {
+
+                dropdown.classList.add('hidden');
+            }
+
+        });
+
+    </script>

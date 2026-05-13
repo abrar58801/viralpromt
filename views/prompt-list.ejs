@@ -1,0 +1,130 @@
+<%- include('partials/header') %>
+
+<div class="flex flex-col md:flex-row min-h-screen">
+
+    <%- include('partials/sidebar') %>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-8">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+
+            <h1 class="text-2xl font-bold">
+                🔓 My <span class="text-cyan-400">Unlocked Prompts</span>
+            </h1>
+
+            <div
+                class="bg-cyan-500/10 text-cyan-400 px-4 py-2 rounded-xl text-sm border border-cyan-500/20">
+
+                Total: <%= prompts.length %>
+
+            </div>
+
+        </div>
+
+        <!-- Prompts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+            <% if(prompts.length > 0) { %>
+
+                <% prompts.forEach(prompt => { %>
+
+                    <div
+                        class="glass-card p-4 hover:border-cyan-500/30 border border-transparent transition">
+
+                        <!-- Images -->
+                        <div class="flex space-x-2 mb-4 h-40">
+
+                            <!-- Before -->
+                            <img
+                                src="/uploads/<%= prompt.before_image %>"
+                                class="w-1/2 object-cover rounded-xl border border-white/10">
+
+                            <!-- After -->
+                            <img
+                                src="/uploads/<%= prompt.after_image %>"
+                                class="w-1/2 object-cover rounded-xl border border-cyan-500/30">
+
+                        </div>
+
+                        <!-- Title -->
+                        <h4 class="text-lg font-bold mb-3 line-clamp-1">
+
+                            <%= prompt.title %>
+
+                        </h4>
+
+                        <!-- Prompt Preview -->
+                        <div
+                            class="bg-black/40 p-4 rounded-xl border border-cyan-500/10 mb-4">
+
+                            <p class="text-sm text-gray-300 line-clamp-3">
+
+                                <%= prompt.description %>
+
+                            </p>
+
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="flex justify-between items-center">
+
+                            <!-- Views -->
+                            <span class="text-xs text-gray-500">
+
+                                👁️ <%= prompt.fake_views || 0 %> Views
+
+                            </span>
+
+                            <!-- Open -->
+                            <a href="/prompt/<%= prompt.id %>"
+                                class="btn-neon text-xs px-4 py-2">
+
+                                View Prompt
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <!-- Empty -->
+                <div class="col-span-full text-center py-24">
+
+                    <div class="text-7xl mb-6">
+                        🔒
+                    </div>
+
+                    <h2 class="text-3xl font-black text-white mb-3">
+
+                        No Unlocked Prompts
+
+                    </h2>
+
+                    <p class="text-gray-500 mb-8">
+
+                        You haven't unlocked any prompts yet.
+
+                    </p>
+
+                    <a href="/dashboard"
+                        class="btn-neon px-8 py-3">
+
+                        Explore Prompts
+                    </a>
+
+                </div>
+
+            <% } %>
+
+        </div>
+
+    </main>
+
+</div>
+
+<%- include('partials/footer') %>

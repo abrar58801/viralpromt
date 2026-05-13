@@ -1,0 +1,109 @@
+<%- include('partials/header') %>
+
+<div class="flex flex-col md:flex-row min-h-screen">
+    <!-- Sidebar Partial -->
+    <%- include('partials/sidebar') %> 
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-8">
+        <div class="max-w-md mx-auto glass-card p-6 border-cyan-500/30">
+            <h2 class="text-2xl font-bold text-center mb-6 text-white">Add <span class="text-cyan-400">Credits</span></h2>
+            
+            <!-- QR Section (Dynamic from Admin later) -->
+            <div class="bg-white p-4 rounded-xl mb-6 flex flex-col items-center shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                <p class="text-black text-[10px] font-bold mb-2 tracking-widest">SCAN QR TO PAY</p>
+                <img src="/uploads/<%= settings.paytm_qr %>" id="qr-display" alt="Payment QR" class="w-48 h-48 object-contain">
+                <div class="mt-3 text-center">
+                    <p class="text-black font-extrabold text-sm">Paytm / PhonePe</p>
+                </div>
+            </div>
+
+            <!-- Instructions Box -->
+            <div class="bg-cyan-500/10 p-4 rounded-lg border border-cyan-500/20 mb-6">
+                <h4 class="text-cyan-400 text-xs font-bold mb-2 uppercase">Instructions:</h4>
+                <ul class="text-[11px] text-gray-300 space-y-1 list-disc ml-4">
+                    <li>Scan the QR and pay a minimum of <span class="text-white font-bold">₹<%= settings.min_deposit %> </span>.</li>
+                    <li>After payment, copy the <span class="text-white font-bold">12-digit UTR</span> or Transaction ID.</li>
+                    <li>Enter the <span class="text-cyan-400">Exact Amount</span> and UTR below.</li>
+                    <li>System will verify the transaction automatically.</li>
+                </ul>
+            </div>
+
+            <!-- Payment Form -->
+            <form id="payment-form" class="space-y-4">
+                <div class="relative">
+                    <label class="block text-[10px] text-gray-400 mb-1 ml-1 uppercase">Deposit Amount (₹)</label>
+                    <input type="number" name="amount" placeholder="Minimum <%= settings.min_deposit %>" required 
+                        class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-cyan-400 outline-none transition-all duration-300">
+                </div>
+
+                <div class="relative">
+                    <label class="block text-[10px] text-gray-400 mb-1 ml-1 uppercase">Ref No / UTR No</label>
+                    <input type="text" name="utr_number" placeholder="Enter Ref No / UTR No" required 
+                        class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-cyan-400 outline-none transition-all duration-300">
+                </div>
+
+                <button type="submit" id="submit-btn" class="btn-neon w-full py-4 mt-2 text-sm tracking-widest font-black flex justify-center items-center">
+                    <span id="btn-text">VERIFY & ADD FUND</span>
+                    <div id="loader" class="hidden ml-3 w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                </button>
+            </form>
+
+            <p class="text-center text-[10px] text-gray-500 mt-6 italic">
+                *Refunds will not be issued after depositing.
+            </p>
+        </div>
+    </main>
+</div>
+
+<script>
+document.getElementById('payment-form').onsubmit = async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const loader = document.getElementById('loader');
+    
+    // UI Update: Loading State
+    btn.disabled = true;
+    btnText.innerText = "VERIFYING WITH GATEWAY...";
+    loader.classList.remove('hidden');
+    btn.style.opacity = "0.7";
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+
+    try {
+        const response = await fetch('/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if(result.success) {
+            // Success Effect
+            btn.style.backgroundColor = "#10b981"; // Green
+            btnText.innerText = "SUCCESS! CREDITS ADDED";
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 2000);
+        } else {
+            // Error Effect
+            alert(result.message);
+            btn.disabled = false;
+            btnText.innerText = "VERIFY & ADD FUND";
+            loader.classList.add('hidden');
+            btn.style.opacity = "1";
+        }
+    } catch (error) {
+        alert("Connection Error. Please try again.");
+        btn.disabled = false;
+        btnText.innerText = "VERIFY & ADD FUND";
+        loader.classList.add('hidden');
+    }
+};
+</script>
+
+<%- include('partials/footer') %>

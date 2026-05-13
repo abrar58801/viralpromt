@@ -1,0 +1,297 @@
+<%- include('partials/header') %>
+
+<div class="flex flex-col md:flex-row min-h-screen">
+
+    <main class="flex-1 p-4 md:p-8">
+
+        <!-- Heading -->
+        <h1 class="text-3xl font-black mb-8">
+
+            📞
+            <span class="text-cyan-400">
+                Support Center
+            </span>
+
+        </h1>
+
+        <div
+            class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- ====================== -->
+            <!-- Contact Card -->
+            <!-- ====================== -->
+
+            <div
+                class="glass-card p-8">
+
+                <h2
+                    class="text-xl font-bold mb-4">
+
+                    Need Help?
+
+                </h2>
+
+                <p
+                    class="text-gray-400 mb-6">
+
+                    Our support team is available 24/7.
+
+                </p>
+
+                <div
+                    class="space-y-4">
+
+                    <!-- Email -->
+                    <a
+                        href="mailto:<%= settings.contact_email || 'support@viralprompt.com' %>"
+
+                        class="flex items-center gap-4 bg-black/30 p-4 rounded-xl hover:border-cyan-400 border border-transparent transition group">
+
+                        <div
+                            class="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center text-2xl">
+
+                            📧
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="font-semibold group-hover:text-cyan-400 transition">
+
+                                Email Support
+
+                            </h3>
+
+                            <p
+                                class="text-sm text-gray-400">
+
+                                <%= settings.contact_email || 'support@viralprompt.com' %>
+
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                    <!-- Telegram -->
+                    <a
+                        href="<%= settings.telegram_link || '#' %>"
+                        target="_blank"
+
+                        class="flex items-center gap-4 bg-black/30 p-4 rounded-xl hover:border-cyan-400 border border-transparent transition group">
+
+                        <div
+                            class="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center">
+
+                            <img
+                                src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png"
+
+                                class="w-7 h-7 object-contain">
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="font-semibold group-hover:text-cyan-400 transition">
+
+                                Telegram Support
+
+                            </h3>
+
+                            <p
+                                class="text-sm text-gray-400">
+
+                                <%= settings.telegram_link || '@viralprompt' %>
+
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                    <!-- WhatsApp -->
+                    <a
+                        href="<%= settings.whatsapp_link || '#' %>"
+                        target="_blank"
+
+                        class="flex items-center gap-4 bg-black/30 p-4 rounded-xl hover:border-cyan-400 border border-transparent transition group">
+
+                        <div
+                            class="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center">
+
+                            <img
+                                src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
+
+                                class="w-7 h-7 object-contain">
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="font-semibold group-hover:text-cyan-400 transition">
+
+                                WhatsApp Chat
+
+                            </h3>
+
+                            <p
+                                class="text-sm text-gray-400">
+
+                                <%= settings.whatsapp_link || '+91 9999999999' %>
+
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                    <!-- Response -->
+                    <div
+                        class="flex items-center gap-4 bg-black/30 p-4 rounded-xl border border-white/5">
+
+                        <div
+                            class="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center text-2xl">
+
+                            ☎️
+
+                        </div>
+
+                        <div>
+
+                            <h3
+                                class="font-semibold">
+
+                                Dirrect Call
+
+                            </h3>
+
+                            <p
+                                class="text-sm text-gray-400">
+                                 <%= settings.contact_call || '+91 9999999999' %>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ====================== -->
+            <!-- Contact Form -->
+            <!-- ====================== -->
+
+            <div
+                class="glass-card p-8">
+
+                <h2
+                    class="text-xl font-bold mb-6">
+
+                    Send Message
+
+                </h2>
+
+                <form
+                    action="/contact-submit"
+                    method="POST"
+                    class="space-y-5">
+
+                    <!-- Name -->
+                    <input
+                        type="text"
+                        name="name"
+
+                        placeholder="Your Name"
+
+                        required
+
+                        value="<%= user ? user.full_name : '' %>"
+
+                        class="w-full bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition">
+
+                    <!-- Phone -->
+                    <input
+                        type="text"
+                        name="phone"
+
+                        placeholder="Phone"
+
+                        required
+
+                        value="<%= user ? user.mobile : '' %>"
+
+                        class="w-full bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition">
+
+                    <!-- Email -->
+                    <input
+                        type="email"
+                        name="email"
+
+                        placeholder="Your Email"
+
+                        required
+
+                        value="<%= user ? user.email : '' %>"
+
+                        class="w-full bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition">
+
+                    <!-- Message -->
+                    <textarea
+                        rows="5"
+                        name="message"
+
+                        placeholder="Write your message..."
+
+                        required
+
+                        class="w-full bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition"></textarea>
+
+                    <!-- Button -->
+                    <button
+                        type="submit"
+
+                        class="btn-neon px-6 py-3">
+
+                        Send Message
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+    // Reset Contact Form
+    window.addEventListener(
+        "pageshow",
+        function () {
+
+            const form =
+                document.querySelector(
+                    'form[action="/contact-submit"]'
+                );
+
+            if (form) {
+
+                form.reset();
+
+            }
+
+        }
+    );
+
+</script>
+
+<%- include('partials/footer') %>

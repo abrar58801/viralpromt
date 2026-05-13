@@ -1,0 +1,128 @@
+<%- include('partials/header') %>
+
+<section class="min-h-screen px-6 py-20">
+
+    <div class="max-w-4xl mx-auto glass-card p-10">
+
+        <div class="text-center mb-10">
+
+            <h1 class="text-4xl font-black mb-4">
+                Contact <span class="text-cyan-400">Us</span>
+            </h1>
+
+            <p class="text-gray-400">
+                We'd love to hear from you.
+            </p>
+
+        </div>
+
+        <form
+            action="/contact-submit"
+            method="POST"
+            class="space-y-6">
+
+            <!-- Full Name -->
+            <div>
+
+                <label class="text-sm text-gray-400">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    required
+                    value="<%= user ? user.full_name : '' %>"
+                    placeholder="Enter your full name"
+                    class="w-full mt-2 bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition">
+
+            </div>
+
+            <!-- Email -->
+            <div>
+
+                <label class="text-sm text-gray-400">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    required
+                    value="<%= user ? user.email : '' %>"
+                    placeholder="Enter your email"
+                    class="w-full mt-2 bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition">
+
+            </div>
+
+            <!-- phone -->
+            <div>
+
+                <label class="text-sm text-gray-400">
+                    Phone
+                </label>
+
+                <input
+                    type="text"
+                    name="phone"
+                    required
+                    value="<%= user ? user.mobile : '' %>"
+                    placeholder="Enter phone"
+                    class="w-full mt-2 bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition">
+
+            </div>
+
+            <!-- Message -->
+            <div>
+
+                <label class="text-sm text-gray-400">
+                    Message
+                </label>
+
+                <textarea
+                    rows="6"
+                    name="message"
+                    required
+                    placeholder="Write your message..."
+                    class="w-full mt-2 bg-black/40 border border-white/10 rounded-xl p-4 outline-none focus:border-cyan-400 transition"></textarea>
+
+            </div>
+
+            <!-- Button -->
+            <button
+                type="submit"
+                class="btn-neon px-8 py-3">
+
+                Send Message
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<script>
+
+    // Reset Contact Form
+    window.addEventListener(
+        "pageshow",
+        function () {
+
+            const form =
+                document.querySelector(
+                    'form[action="/contact-submit"]'
+                );
+
+            if (form) {
+
+                form.reset();
+
+            }
+
+        }
+    );
+
+</script>
+
+<%- include('partials/footer') %>

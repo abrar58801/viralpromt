@@ -1,0 +1,129 @@
+<%- include('header') %>
+
+    <div class="flex flex-col md:flex-row min-h-screen bg-black text-white">
+
+        <%- include('sidebar') %>
+
+            <main class="flex-1 p-6 md:p-10">
+
+                <div class="flex justify-between items-center mb-8">
+
+                    <h1 class="text-3xl font-black">
+                        💸 <span class="text-red-500">Withdraw Requests</span>
+                    </h1>
+
+                </div>
+
+                <div class="bg-[#111] rounded-2xl border border-white/5 overflow-hidden">
+
+                    <div class="overflow-x-auto">
+
+                        <table class="w-full">
+
+                            <thead class="bg-white/5 text-xs uppercase text-gray-400">
+
+                                <tr>
+                                    <th class="p-5 text-left">User</th>
+                                    <th class="p-5 text-left">Mobile</th>
+                                    <th class="p-5 text-left">Email</th>
+                                    <th class="p-5 text-left">UPI</th>
+                                    <th class="p-5 text-left">Amount</th>
+                                    <th class="p-5 text-left">Status</th>
+                                    <th class="p-5 text-left">Action</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <% withdrawals.forEach(w=> { %>
+
+                                    <tr class="border-b border-white/5">
+
+                                        <td class="p-5">
+                                            <%= w.full_name %>
+                                        </td>
+
+                                        <td class="p-5">
+                                            <%= w.mobile %>
+                                        </td>
+
+                                        <td class="p-5">
+                                            <%= w.email %>
+                                        </td>
+
+                                        <td class="p-5 text-cyan-400 font-bold">
+                                            <%= w.upi_id %>
+                                        </td>
+
+                                        <td class="p-5 text-red-400 font-bold">
+                                            ₹ <%= w.amount %>
+                                        </td>
+
+                                        <td class="p-5">
+
+                                            <% if(w.status==='pending' ) { %>
+                                                <span class="text-yellow-400">Pending</span>
+                                                <% } %>
+
+                                                    <% if(w.status==='success' ) { %>
+                                                        <span class="text-green-400">Approved</span>
+                                                        <% } %>
+
+                                                            <% if(w.status==='failed' ) { %>
+                                                                <span class="text-red-400">Rejected</span>
+                                                                <% } %>
+
+                                        </td>
+
+                                        <td class="p-5">
+
+                                            <% if(w.status==='pending' ) { %>
+
+                                                <div class="flex gap-2">
+
+                                                    <form action="/admin/withdraw-action" method="POST">
+                                                        <input type="hidden" name="id" value="<%= w.id %>">
+                                                        <input type="hidden" name="action" value="approve">
+
+                                                        <button
+                                                            class="bg-green-600 px-4 py-2 rounded-xl text-xs font-bold">
+                                                            Approve
+                                                        </button>
+                                                    </form>
+
+                                                    <form action="/admin/withdraw-action" method="POST">
+                                                        <input type="hidden" name="id" value="<%= w.id %>">
+                                                        <input type="hidden" name="action" value="reject">
+
+                                                        <button
+                                                            class="bg-red-600 px-4 py-2 rounded-xl text-xs font-bold">
+                                                            Reject
+                                                        </button>
+                                                    </form>
+
+                                                </div>
+
+                                                <% } else { %>
+
+                                                    <span class="text-gray-500">Completed</span>
+
+                                                    <% } %>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <% }) %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+    </div>

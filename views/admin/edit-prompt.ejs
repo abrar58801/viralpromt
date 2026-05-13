@@ -1,0 +1,254 @@
+<%- include('header') %>
+
+    <div class="flex flex-col md:flex-row min-h-screen bg-black">
+
+        <%- include('sidebar') %>
+
+            <main class="flex-1 p-6 md:p-10">
+
+                <!-- Heading -->
+                <h1 class="text-2xl font-bold mb-6 text-white uppercase tracking-tighter">
+
+                    Edit
+                    <span class="text-red-500">
+                        Prompt
+                    </span>
+
+                </h1>
+
+                <!-- Form -->
+                <div class="bg-[#111] p-6 border border-white/5 rounded-2xl">
+
+                    <h3 class="text-xs font-bold mb-6 uppercase tracking-widest text-red-500">
+
+                        Update Prompt Design
+
+                    </h3>
+
+                    <form action="/admin/update-prompt/<%= prompt.id %>" method="POST" enctype="multipart/form-data"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                        <!-- Title -->
+                        <input type="text" name="title" value="<%= prompt.title %>" required placeholder="Title"
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+                        <!-- Credits -->
+                        <input type="number" name="price_credits" value="<%= prompt.price_credits %>" required
+                            placeholder="Price (Credits)"
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+
+                        <!-- Type -->
+                        <select name="type" id="promptType"
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+                            <option value="image" <%=prompt.type==='image' ? 'selected' : '' %>>
+
+                                Image
+
+                            </option>
+
+                            <option value="video" <%=prompt.type==='video' ? 'selected' : '' %>>
+
+                                Video
+
+                            </option>
+
+                        </select>
+
+                        <!-- Views -->
+                        <input type="number" name="views" value="<%= prompt.fake_views %>" required
+                            placeholder="Total Views"
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
+
+                        <!-- Media -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-full">
+
+                            <!-- Before -->
+                            <div class="p-4 border border-dashed border-white/10 rounded-xl bg-white/5">
+
+                                <label class="text-[9px] text-gray-500 uppercase block mb-3">
+
+                                    Before Media
+
+                                </label>
+
+                                <!-- IMAGE -->
+                                <div id="beforeImageBox" class="<%= prompt.type === 'video' ? 'hidden' : '' %>">
+
+                                    <% if(prompt.before_image) { %>
+
+                                        <img src="/uploads/<%= prompt.before_image %>"
+                                            class="w-full h-32 object-cover rounded-xl mb-4 border border-white/10">
+
+                                        <% } %>
+
+                                            <input type="file" name="before_image"
+                                                class="text-[10px] text-gray-400 w-full">
+
+                                </div>
+
+                                <!-- VIDEO -->
+                                <div id="beforeVideoBox" class="<%= prompt.type === 'image' ? 'hidden' : '' %>">
+
+                                    <input type="url" name="before_video" value="<%= prompt.before_video || '' %>"
+                                        placeholder="Before Video URL"
+                                        class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none">
+
+                                </div>
+
+                            </div>
+
+                            <!-- After -->
+                            <div class="p-4 border border-dashed border-white/10 rounded-xl bg-white/5">
+
+                                <label class="text-[9px] text-gray-500 uppercase block mb-3">
+
+                                    After Media
+
+                                </label>
+
+                                <!-- IMAGE -->
+                                <div id="afterImageBox" class="<%= prompt.type === 'video' ? 'hidden' : '' %>">
+
+                                    <% if(prompt.after_image) { %>
+
+                                        <img src="/uploads/<%= prompt.after_image %>"
+                                            class="w-full h-32 object-cover rounded-xl mb-4 border border-white/10">
+
+                                        <% } %>
+
+                                            <input type="file" name="after_image"
+                                                class="text-[10px] text-gray-400 w-full">
+
+                                </div>
+
+                                <!-- VIDEO -->
+                                <div id="afterVideoBox" class="<%= prompt.type === 'image' ? 'hidden' : '' %>">
+
+                                    <input type="url" name="after_video" value="<%= prompt.after_video || '' %>"
+                                        placeholder="After Video URL"
+                                        class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Description -->
+                        <textarea name="description" placeholder="Prompt Description..."
+                            class="col-span-full bg-white/5 border border-white/10 p-4 rounded-xl h-40 text-white outline-none focus:border-red-500"><%= prompt.description %></textarea>
+
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-red-500">
+                            How To Use
+                        </h3>
+
+                        <!-- how_to_use -->
+                        <textarea name="how_to_use" placeholder="Enter How To Use" required
+                            class="col-span-full bg-white/5 border border-white/10 p-4 rounded-xl h-40 text-white outline-none focus:border-red-500"><%= prompt.how_to_use %></textarea>
+
+                        <!-- Submit -->
+                        <button type="submit"
+                            class="col-span-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-black text-white uppercase tracking-[2px] transition-all shadow-lg active:scale-95">
+
+                            UPDATE PROMPT
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </main>
+
+    </div>
+
+    <script>
+
+        const promptType =
+            document.getElementById(
+                'promptType'
+            );
+
+        const beforeImageBox =
+            document.getElementById(
+                'beforeImageBox'
+            );
+
+        const afterImageBox =
+            document.getElementById(
+                'afterImageBox'
+            );
+
+        const beforeVideoBox =
+            document.getElementById(
+                'beforeVideoBox'
+            );
+
+        const afterVideoBox =
+            document.getElementById(
+                'afterVideoBox'
+            );
+
+        promptType.addEventListener(
+            'change',
+            function () {
+
+                // VIDEO
+                if (
+                    this.value === 'video'
+                ) {
+
+                    beforeImageBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                    afterImageBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                    beforeVideoBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                    afterVideoBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                }
+
+                // IMAGE
+                else {
+
+                    beforeImageBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                    afterImageBox
+                        .classList.remove(
+                            'hidden'
+                        );
+
+                    beforeVideoBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                    afterVideoBox
+                        .classList.add(
+                            'hidden'
+                        );
+
+                }
+
+            });
+
+    </script>

@@ -1,0 +1,116 @@
+<%- include('header') %>
+
+<div class="flex flex-col md:flex-row min-h-screen bg-black">
+
+    <%- include('sidebar') %>
+
+    <main class="flex-1 p-6 md:p-10">
+
+        <h1
+            class="text-2xl font-bold mb-8 text-white uppercase tracking-tighter">
+
+            Transactions
+        </h1>
+
+        <div
+            class="bg-[#111] rounded-2xl border border-white/5 overflow-hidden">
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full">
+
+                    <thead
+                        class="bg-white/5 text-[10px] uppercase text-gray-500 tracking-widest">
+
+                        <tr>
+
+                            <th class="p-5 text-left">
+                                User
+                            </th>
+
+                            <th class="p-5 text-left">
+                                Amount
+                            </th>
+
+                            <th class="p-5 text-left">
+                                Type
+                            </th>
+
+                            <th class="p-5 text-left">
+                                Status
+                            </th>
+
+                            <th class="p-5 text-left">
+                                Date
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody
+                        class="divide-y divide-white/5">
+
+                        <% transactions.forEach(t => { %>
+
+                            <tr>
+
+                                <td class="p-5">
+
+                                    <%= t.full_name %>
+
+                                </td>
+
+                                <td
+                                    class="p-5 text-cyan-400 font-bold">
+
+                                    ₹
+                                    <%= t.amount %>
+
+                                </td>
+
+                                <td class="p-5">
+
+                                    <%= t.type %>
+
+                                </td>
+
+                                <td class="p-5">
+
+                                    <span
+                                        class="<%= t.status === 'success'
+                                        ? 'text-green-400'
+                                        : 'text-yellow-400' %> uppercase text-xs font-bold">
+
+                                        <%= t.status %>
+
+                                    </span>
+
+                                </td>
+
+                                <td class="p-5 text-gray-500 text-sm">
+                                    <%= new Date(t.created_at).toLocaleString('en-IN', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit'
+                                    }) %>
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>

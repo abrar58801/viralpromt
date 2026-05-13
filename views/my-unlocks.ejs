@@ -1,0 +1,246 @@
+<%- include('partials/header') %>
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+
+        <%- include('partials/sidebar') %>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-4 md:p-8">
+
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-8">
+
+                    <h1 class="text-2xl font-bold">
+                        🔓 My <span class="text-cyan-400">Unlocked Prompts</span>
+                    </h1>
+
+                    <div class="bg-cyan-500/10 text-cyan-400 px-4 py-2 rounded-xl text-sm border border-cyan-500/20">
+
+                        Total: <%= prompts.length %>
+
+                    </div>
+
+                </div>
+
+                <!-- Category Switcher -->
+                <div class="flex justify-center space-x-4 mb-12">
+
+                    <a href="/my-unlocks-list/?type=image" class="btn_prompt <%= currentType === 'image'
+            ? 'btn-neon'
+            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+
+                        IMAGE PROMPT
+                    </a>
+
+                    <a href="/my-unlocks-list/?type=video" class="btn_prompt <%= currentType === 'video'
+            ? 'btn-neon'
+            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+
+                        VIDEO PROMPT
+                    </a>
+
+                </div>
+
+                <!-- Prompts Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                    <% if(prompts.length> 0) { %>
+
+                        <% prompts.forEach(prompt=> { %>
+
+                            <div class="glass-card p-4 hover:border-cyan-500/30 border border-transparent transition">
+
+                                <!-- Media -->
+                                <div class="flex space-x-2 mb-4">
+
+                                    <!-- ================= -->
+                                    <!-- IMAGE PROMPT -->
+                                    <!-- ================= -->
+
+                                    <% if(prompt.type==='image' ) { %>
+
+                                        <!-- Before -->
+                                        <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                            <p class="text-[10px] text-center bg-gray-800">
+
+                                                BEFORE
+
+                                            </p>
+
+                                            <img src="/uploads/<%= prompt.before_image %>" alt="Before"
+                                                class="w-full h-40 object-cover">
+
+                                        </div>
+
+                                        <!-- After -->
+                                        <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                            <p class="text-[10px] text-center bg-cyan-900">
+
+                                                AFTER
+
+                                            </p>
+
+                                            <img src="/uploads/<%= prompt.after_image %>" alt="After"
+                                                class="w-full h-40 object-cover">
+
+                                        </div>
+
+                                        <% } %>
+
+                                            <!-- ================= -->
+                                            <!-- VIDEO PROMPT -->
+                                            <!-- ================= -->
+
+                                            <% if(prompt.type==='video' ) { %>
+
+                                                <!-- Before -->
+                                                <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                                    <p class="text-[10px] text-center bg-gray-800">
+
+                                                        BEFORE
+
+                                                    </p>
+
+                                                    <video src="<%= prompt.before_video %>" controls muted playsinline
+                                                        class="w-full h-40 object-cover bg-black">
+                                                    </video>
+
+                                                </div>
+
+                                                <!-- After -->
+                                                <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                                    <p class="text-[10px] text-center bg-cyan-900">
+
+                                                        AFTER
+
+                                                    </p>
+
+                                                    <video src="<%= prompt.after_video %>" controls muted playsinline
+                                                        class="w-full h-40 object-cover bg-black">
+                                                    </video>
+
+                                                </div>
+
+                                                <% } %>
+
+                                </div>
+
+                                <!-- Title -->
+                                <h4 class="text-lg font-bold mb-3 line-clamp-1">
+
+                                    <%= prompt.title %>
+
+                                </h4>
+
+                                <!-- Prompt Preview -->
+                                <div class="bg-black/40 p-4 rounded-xl border border-cyan-500/10 mb-4">
+
+                                    <p class="text-sm text-gray-300 line-clamp-3">
+
+                                        <%= prompt.description %>
+
+                                    </p>
+
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="flex justify-between items-center">
+
+                                    <!-- Views -->
+                                    <span class="text-xs text-gray-500">
+
+                                        👁️ <%= prompt.fake_views || 0 %> Views
+
+                                    </span>
+
+                                    <!-- Open -->
+                                    <a href="/prompt/<%= prompt.id %>" class="btn-neon text-xs px-4 py-2">
+
+                                        View Prompt
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                            <% }) %>
+
+                                <% } else { %>
+
+                                    <!-- Empty -->
+                                    <div class="col-span-full text-center py-24">
+
+                                        <div class="text-7xl mb-6">
+                                            🔒
+                                        </div>
+
+                                        <h2 class="text-3xl font-black text-white mb-3">
+
+                                            No Unlocked Prompts
+
+                                        </h2>
+
+                                        <p class="text-gray-500 mb-8">
+
+                                            You haven't unlocked any prompts yet.
+
+                                        </p>
+
+                                        <a href="/dashboard" class="btn-neon px-8 py-3">
+
+                                            Explore Prompts
+                                        </a>
+
+                                    </div>
+
+                                    <% } %>
+
+                </div>
+
+                <!-- Pagination -->
+                <% if (totalPages> 1) { %>
+
+                    <div class="mt-12 flex justify-center items-center gap-4">
+
+                        <!-- Previous -->
+                        <% if (currentPage> 1) { %>
+
+                            <a href="/my-unlocks?page=<%= currentPage - 1 %>"
+                                class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                ← Back
+                            </a>
+
+                            <% } %>
+
+                                <!-- Counter -->
+                                <div class="px-5 py-2 rounded-xl bg-cyan-400 text-black font-bold">
+
+                                    <%= currentPage %> / <%= totalPages %>
+
+                                </div>
+
+                                <!-- Next -->
+                                <% if (currentPage < totalPages) { %>
+
+                                    <a href="/my-unlocks?page=<%= currentPage + 1 %>"
+                                        class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
+
+                                        Next →
+                                    </a>
+
+                                    <% } %>
+
+                    </div>
+
+                    <% } %>
+
+            </main>
+
+    </div>
+
+    <%- include('partials/footer') %>

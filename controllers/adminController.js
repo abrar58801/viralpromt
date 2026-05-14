@@ -942,6 +942,7 @@ exports.updateWallet = async (req, res) => {
 
     let currentWallet = Number(user.wallet_credits || 0);
     let finalWallet = currentWallet;
+    let remainingWallet = 0;
 
     // Add / Deduct
     if (action_type === "deduct") {
@@ -950,16 +951,18 @@ exports.updateWallet = async (req, res) => {
       if (finalWallet < 0) {
         finalWallet = 0;
       }
+      
     } else {
       finalWallet = currentWallet + updateAmount;
+      remainingWallet = amount;
     }
 
     // Update wallet
     await db.query(
       `UPDATE users
-       SET wallet_credits = ?
+       SET wallet_credits = ?, remaining_wallet = remaining_wallet + ?
        WHERE id = ?`,
-      [finalWallet, user_id],
+      [finalWallet, remainingWallet, user_id],
     );
 
     // Transaction history

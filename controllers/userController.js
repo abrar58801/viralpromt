@@ -847,8 +847,12 @@ exports.getWithdraw = async (req, res) => {
       return res.redirect("/login");
     }
 
+    const user = users[0];
+    const withdrawAmount = user.wallet_credits - user.remaining_wallet || 0;
+
     res.render("withdraw", {
-      user: users[0],
+      user,
+      withdrawAmount: withdrawAmount > 0 ? withdrawAmount : 0,
       error: null,
       success: null,
     });

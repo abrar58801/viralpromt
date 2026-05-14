@@ -23,7 +23,7 @@
                             ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
                             : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' %>">
 
-                            <%= prompt.type==='video' && prompt.media_type==='video' ? 'Video' : 'Image' %> Prompt
+                            <%= prompt.type %> Prompt
 
                         </div>
 
@@ -40,7 +40,7 @@
                     <!-- IMAGE PROMPT -->
                     <!-- ====================== -->
 
-                    <% if(prompt.type==='image' || (prompt.type==='video' && prompt.media_type==='image' )) { %>
+                    <% if(prompt.type==='image' ) { %>
 
                         <% if(isUnlocked) { %>
 
@@ -106,73 +106,73 @@
                                         <!-- VIDEO PROMPT -->
                                         <!-- ====================== -->
 
-                                        <!-- VIDEO PROMPT -->
-<% if(prompt.type === 'video' && prompt.media_type === 'video') { %>
+                                        <% if(prompt.type==='video' ) { %>
 
-    <% if(isUnlocked) { %>
+                                            <% if(isUnlocked) { %>
 
-        <div
-            class="relative rounded-3xl overflow-hidden border border-purple-500/30 shadow-[0_0_40px_rgba(168,85,247,0.08)]">
+                                                <div
+                                                    class="relative rounded-3xl overflow-hidden border border-purple-500/30 shadow-[0_0_40px_rgba(168,85,247,0.08)]">
 
-            <video
-                src="<%= prompt.after_video %>"
-                controls
-                autoplay
-                muted
-                playsinline
-                class="w-full h-[500px] object-cover bg-black">
-            </video>
+                                                    <video src="<%= prompt.after_video %>" controls autoplay muted
+                                                        playsinline class="w-full h-[500px] object-cover bg-black">
+                                                    </video>
 
-            <div
-                class="absolute top-4 left-4 bg-purple-500 text-white px-4 py-2 rounded-full text-xs font-black tracking-[2px]">
+                                                    <!-- Badge -->
+                                                    <div
+                                                        class="absolute top-4 left-4 bg-purple-500 text-white px-4 py-2 rounded-full text-xs font-black tracking-[2px]">
 
-                VIDEO UNLOCKED
+                                                        VIDEO UNLOCKED
 
-            </div>
+                                                    </div>
 
-        </div>
+                                                </div>
 
-        <p class="text-purple-400 text-center mt-5 text-sm font-bold">
-            🎬 ORIGINAL VIDEO UNLOCKED
-        </p>
+                                                <p class="text-purple-400 text-center mt-5 text-sm font-bold">
 
-    <% } else { %>
+                                                    🎬 ORIGINAL VIDEO UNLOCKED
 
-        <div class="relative rounded-3xl overflow-hidden border border-white/10">
+                                                </p>
 
-            <video
-                src="<%= prompt.before_video %>"
-                autoplay
-                muted
-                loop
-                playsinline
-                class="w-full h-[500px] object-cover blur-sm scale-105 bg-black">
-            </video>
+                                                <% } else { %>
 
-            <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
+                                                    <div
+                                                        class="relative rounded-3xl overflow-hidden border border-white/10">
 
-                <div
-                    class="w-20 h-20 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-4xl mb-5">
+                                                        <video src="<%= prompt.before_video %>" autoplay muted loop
+                                                            playsinline
+                                                            class="w-full h-[500px] object-cover blur-sm scale-105 bg-black">
+                                                        </video>
 
-                    🎬
+                                                        <!-- Overlay -->
+                                                        <div
+                                                            class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
 
-                </div>
+                                                            <div
+                                                                class="w-20 h-20 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-4xl mb-5">
 
-                <h3 class="text-2xl font-black mb-2">
-                    Locked Video
-                </h3>
+                                                                🎬
 
-                <p class="text-gray-400 text-sm">
-                    Unlock to watch full HD video
-                </p>
+                                                            </div>
 
-            </div>
+                                                            <h3 class="text-2xl font-black mb-2">
 
-        </div>
+                                                                Locked Video
 
-    <% } %>
+                                                            </h3>
 
-<% } %>
+                                                            <p class="text-gray-400 text-sm">
+
+                                                                Unlock to watch full HD video
+
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <% } %>
+
+                                                        <% } %>
 
                 </div>
 

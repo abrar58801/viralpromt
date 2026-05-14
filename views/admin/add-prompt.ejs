@@ -22,9 +22,7 @@
                         </h1>
 
                         <p class="text-gray-500 mt-2 text-sm">
-
                             Upload new viral AI prompt design.
-
                         </p>
 
                     </div>
@@ -42,9 +40,7 @@
                 <div class="bg-[#111] p-6 md:p-8 border border-white/5 rounded-2xl">
 
                     <h3 class="text-xs font-bold mb-6 uppercase tracking-widest text-red-500">
-
                         Upload New Design
-
                     </h3>
 
                     <form action="/admin/add-prompt" method="POST" enctype="multipart/form-data"
@@ -133,24 +129,18 @@
                             <div class="p-4 border border-dashed border-white/10 rounded-xl bg-white/5">
 
                                 <label class="text-[10px] text-gray-500 uppercase block mb-3">
-
                                     After Media
-
                                 </label>
 
                                 <!-- Image Upload -->
                                 <div id="afterImageBox">
-
                                     <input type="file" name="after_image" class="text-[10px] text-gray-400 w-full">
-
                                 </div>
 
                                 <!-- Video URL -->
                                 <div id="afterVideoBox" class="hidden">
-
                                     <input type="url" name="after_video" placeholder="After Video URL"
                                         class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none">
-
                                 </div>
 
                             </div>
@@ -215,11 +205,13 @@
 
                 if (media === 'image') {
                     beforeImageBox.classList.remove('hidden');
-                    afterImageBox.classList.remove('hidden');
+                    afterImageBox.classList.add('hidden');
 
                     beforeVideoBox.classList.add('hidden');
-                    afterVideoBox.classList.add('hidden');
-                } else {
+                    afterVideoBox.classList.remove('hidden');
+                }
+
+                else {
                     beforeImageBox.classList.add('hidden');
                     afterImageBox.classList.add('hidden');
 

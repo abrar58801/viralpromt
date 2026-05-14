@@ -60,9 +60,9 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
- req.session.destroy(() => {
-        res.redirect('/admin');
-    });
+  req.session.destroy(() => {
+    res.redirect("/admin");
+  });
 };
 
 exports.getDashboard = async (req, res) => {
@@ -298,60 +298,50 @@ exports.postAddPrompt = (req, res) => {
           media_type,
           before_video,
           after_video,
-          how_to_use
+          how_to_use,
         } = req.body;
 
         // Default Values
         let before_image = null;
-
         let after_image = null;
-
         let finalBeforeVideo = null;
-
         let finalAfterVideo = null;
 
-        // =========================
-        // IMAGE TYPE
-        // =========================
-
-        if (type === "image" || (type === "video" && media_type === "image")) {
-          // Check Files
+        // IMAGE PROMPT
+        if (type === "image") {
           if (
             !req.files ||
             !req.files["before_image"] ||
             !req.files["after_image"]
           ) {
-            return res.send(
-              `
-                        Error:
-                        Both images required.
-                        `,
-            );
+            return res.send("Both images required.");
           }
 
-          // Images
           before_image = req.files["before_image"][0].filename;
-
           after_image = req.files["after_image"][0].filename;
         }
 
-        // =========================
-        // VIDEO TYPE
-        // =========================
+        // VIDEO + IMAGE
+        if (type === "video" && media_type === "image") {
+          if (!req.files || !req.files["before_image"]) {
+            return res.send("Before image required.");
+          }
 
+          if (!after_video) {
+            return res.send("After video URL required.");
+          }
+
+          before_image = req.files["before_image"][0].filename;
+          finalAfterVideo = after_video;
+        }
+
+        // VIDEO + VIDEO
         if (type === "video" && media_type === "video") {
-          // Check URLs
           if (!before_video || !after_video) {
-            return res.send(
-              `
-                        Error:
-                        Both video URLs required.
-                        `,
-            );
+            return res.send("Both video URLs required.");
           }
 
           finalBeforeVideo = before_video;
-
           finalAfterVideo = after_video;
         }
 
@@ -461,41 +451,38 @@ exports.updatePrompt = (req, res) => {
         let finalBeforeVideo = oldPrompt[0].before_video;
         let finalAfterVideo = oldPrompt[0].after_video;
 
-        // =========================
-        // IMAGE TYPE
-        // =========================
-
-        if (type === "image" || (type === "video" && media_type === "image")) {
-          // Before Image
+        // IMAGE
+        if (type === "image") {
           if (req.files && req.files["before_image"]) {
             before_image = req.files["before_image"][0].filename;
           }
 
-          // After Image
           if (req.files && req.files["after_image"]) {
             after_image = req.files["after_image"][0].filename;
           }
 
-          // Remove Video URLs
           finalBeforeVideo = null;
-
           finalAfterVideo = null;
         }
 
-        // =========================
-        // VIDEO TYPE
-        // =========================
-
-        if (type === "video" && media_type === "video") {
-          // Video URLs
-          finalBeforeVideo = before_video || oldPrompt[0].before_video;
-
-          finalAfterVideo = after_video || oldPrompt[0].after_video;
-
-          // Remove Images
-          before_image = null;
+        // VIDEO + IMAGE
+        if (type === "video" && media_type === "image") {
+          if (req.files && req.files["before_image"]) {
+            before_image = req.files["before_image"][0].filename;
+          }
 
           after_image = null;
+          finalBeforeVideo = null;
+          finalAfterVideo = after_video || oldPrompt[0].after_video;
+        }
+
+        // VIDEO + VIDEO
+        if (type === "video" && media_type === "video") {
+          before_image = null;
+          after_image = null;
+
+          finalBeforeVideo = before_video || oldPrompt[0].before_video;
+          finalAfterVideo = after_video || oldPrompt[0].after_video;
         }
 
         // =========================
@@ -552,13 +539,12 @@ exports.updatePrompt = (req, res) => {
 // --- 5. Edit Prompt Page ---
 exports.editPromptPage = async (req, res) => {
   try {
-    const [prompts] = await db.query(
-      `SELECT * FROM prompts WHERE id = ?`,
-      [req.params.id]
-    );
+    const [prompts] = await db.query(`SELECT * FROM prompts WHERE id = ?`, [
+      req.params.id,
+    ]);
 
     const [categories] = await db.query(
-      `SELECT * FROM categories WHERE status = 1 ORDER BY id DESC`
+      `SELECT * FROM categories WHERE status = 1 ORDER BY id DESC`,
     );
 
     if (!prompts.length) {
@@ -606,7 +592,7 @@ exports.deletePrompt = async (req, res) => {
 exports.addPromptPage = async (req, res) => {
   try {
     const [categories] = await db.query(
-      `SELECT * FROM categories WHERE status = 1 ORDER BY id DESC`
+      `SELECT * FROM categories WHERE status = 1 ORDER BY id DESC`,
     );
 
     res.render("admin/add-prompt", {
@@ -830,7 +816,7 @@ exports.updateSettings = (req, res) => {
         refer_percent,
         how_to_use,
         bharatpe_mid,
-        bharatpe_token
+        bharatpe_token,
       } = req.body;
 
       // OLD SETTINGS
@@ -918,7 +904,7 @@ exports.updateSettings = (req, res) => {
           refer_percent,
           how_to_use,
           bharatpe_mid,
-          bharatpe_token
+          bharatpe_token,
         ],
       );
 
@@ -1092,7 +1078,6 @@ exports.withdrawAction = async (req, res) => {
   }
 };
 
-
 exports.updateUserStatus = async (req, res) => {
   try {
     const { user_id, status } = req.body;
@@ -1101,17 +1086,15 @@ exports.updateUserStatus = async (req, res) => {
       `UPDATE users
        SET status = ?
        WHERE id = ?`,
-      [status, user_id]
+      [status, user_id],
     );
 
     return res.redirect("/admin/users");
-
   } catch (err) {
     console.log(err);
     return res.send("Status Update Error");
   }
 };
-
 
 exports.getChangePassword = async (req, res) => {
   try {
@@ -1120,15 +1103,13 @@ exports.getChangePassword = async (req, res) => {
     }
 
     res.render("admin/change-password", {
-      admin: req.session.admin
+      admin: req.session.admin,
     });
-
   } catch (err) {
     console.log(err);
     res.status(500).send("Page Error");
   }
 };
-
 
 exports.postChangePassword = async (req, res) => {
   try {
@@ -1136,11 +1117,7 @@ exports.postChangePassword = async (req, res) => {
       return res.redirect("/admin/login");
     }
 
-    const {
-      current_password,
-      new_password,
-      confirm_password
-    } = req.body;
+    const { current_password, new_password, confirm_password } = req.body;
 
     if (new_password !== confirm_password) {
       return res.send(`
@@ -1156,7 +1133,7 @@ exports.postChangePassword = async (req, res) => {
        FROM users
        WHERE id = ?
        AND type = 1`,
-      [req.session.admin.id]
+      [req.session.admin.id],
     );
 
     if (!admins.length) {
@@ -1165,10 +1142,7 @@ exports.postChangePassword = async (req, res) => {
 
     const admin = admins[0];
 
-    const isMatch = await bcrypt.compare(
-      current_password,
-      admin.password
-    );
+    const isMatch = await bcrypt.compare(current_password, admin.password);
 
     if (!isMatch) {
       return res.send(`
@@ -1179,21 +1153,14 @@ exports.postChangePassword = async (req, res) => {
       `);
     }
 
-    const hashedPassword = await bcrypt.hash(
-      new_password,
-      10
-    );
+    const hashedPassword = await bcrypt.hash(new_password, 10);
 
     await db.query(
       `UPDATE users
        SET password = ?, 
        plain_password = ?
        WHERE id = ?`,
-      [
-        hashedPassword,
-        new_password,
-        admin.id
-      ]
+      [hashedPassword, new_password, admin.id],
     );
 
     return res.send(`
@@ -1202,7 +1169,6 @@ exports.postChangePassword = async (req, res) => {
         window.location.href='/admin/dashboard';
       </script>
     `);
-
   } catch (err) {
     console.log(err);
     res.status(500).send("Password Change Error");
@@ -1226,7 +1192,7 @@ exports.getCategories = async (req, res) => {
       `SELECT COUNT(*) as total
        FROM categories
        WHERE name LIKE ?`,
-      [`%${search}%`]
+      [`%${search}%`],
     );
 
     const totalCategories = countRows[0].total;
@@ -1238,7 +1204,7 @@ exports.getCategories = async (req, res) => {
        WHERE name LIKE ?
        ORDER BY id DESC
        LIMIT ? OFFSET ?`,
-      [`%${search}%`, limit, offset]
+      [`%${search}%`, limit, offset],
     );
 
     res.render("admin/categories", {
@@ -1265,7 +1231,7 @@ exports.postAddCategory = async (req, res) => {
     await db.query(
       `INSERT INTO categories (name, status)
        VALUES (?, ?)`,
-      [name, status || 1]
+      [name, status || 1],
     );
 
     res.redirect("/admin/categories");
@@ -1280,7 +1246,7 @@ exports.editCategoryPage = async (req, res) => {
   try {
     const [categories] = await db.query(
       `SELECT * FROM categories WHERE id = ?`,
-      [req.params.id]
+      [req.params.id],
     );
 
     if (!categories.length) {
@@ -1305,7 +1271,7 @@ exports.updateCategory = async (req, res) => {
       `UPDATE categories
        SET name = ?, status = ?
        WHERE id = ?`,
-      [name, status, req.params.id]
+      [name, status, req.params.id],
     );
 
     res.redirect("/admin/categories");
@@ -1318,10 +1284,7 @@ exports.updateCategory = async (req, res) => {
 // Delete Category
 exports.deleteCategory = async (req, res) => {
   try {
-    await db.query(
-      `DELETE FROM categories WHERE id = ?`,
-      [req.params.id]
-    );
+    await db.query(`DELETE FROM categories WHERE id = ?`, [req.params.id]);
 
     res.redirect("/admin/categories");
   } catch (err) {

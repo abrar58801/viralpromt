@@ -121,8 +121,7 @@
 
                                 </label>
 
-                                <div id="afterImageBox"
-                                    class="<%= (prompt.type === 'image' || (prompt.type === 'video' && prompt.media_type === 'image')) ? '' : 'hidden' %>">
+                                <div id="afterImageBox" class="<%= prompt.type === 'image' ? '' : 'hidden' %>">
 
                                     <% if(prompt.after_image) { %>
                                         <img src="/uploads/<%= prompt.after_image %>"
@@ -133,8 +132,7 @@
                                                 class="text-[10px] text-gray-400 w-full">
                                 </div>
 
-                                <div id="afterVideoBox"
-                                    class="<%= (prompt.type === 'video' && prompt.media_type === 'video') ? '' : 'hidden' %>">
+                                <div id="afterVideoBox" class="<%= prompt.type === 'video' ? '' : 'hidden' %>">
 
                                     <input type="url" name="after_video" value="<%= prompt.after_video || '' %>"
                                         placeholder="After Video URL"
@@ -196,16 +194,19 @@
                 beforeVideoBox.classList.add('hidden');
                 afterVideoBox.classList.add('hidden');
             }
-            else {
+
+            else if (type === 'video') {
                 mediaType.classList.remove('hidden');
 
                 if (media === 'image') {
                     beforeImageBox.classList.remove('hidden');
-                    afterImageBox.classList.remove('hidden');
+                    afterImageBox.classList.add('hidden');
 
                     beforeVideoBox.classList.add('hidden');
-                    afterVideoBox.classList.add('hidden');
-                } else {
+                    afterVideoBox.classList.remove('hidden');
+                }
+
+                else {
                     beforeImageBox.classList.add('hidden');
                     afterImageBox.classList.add('hidden');
 

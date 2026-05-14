@@ -66,18 +66,18 @@
                 </section>
 
                 <!-- Category Switcher -->
-                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-12">
+                <div class="flex flex-wrap md:flex-row justify-center items-center gap-4 mb-12">
 
                     <a href="/?type=image&category=all" class="btn_prompt <%= currentType === 'image'
             ? 'btn-neon'
-            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+            : 'border border-cyan-500/40 px-8 py-3 rounded-full' %>">
 
                         IMAGE PROMPT
                     </a>
 
                     <a href="/?type=video&category=all" class="btn_prompt <%= currentType === 'video'
             ? 'btn-neon'
-            : 'border border-white/20 px-8 py-2 rounded-full' %>">
+            : 'border border-cyan-500/40 px-8 py-3 rounded-full' %>">
 
                         VIDEO PROMPT
                     </a>
@@ -152,16 +152,29 @@
 
                                             <% if(prompt.type==='video' && prompt.media_type==='image' ) { %>
 
+                                                <!-- Before Image -->
                                                 <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
-                                                    <p class="text-[10px] text-center bg-gray-800">BEFORE</p>
+
+                                                    <p class="text-[10px] text-center bg-gray-800">
+                                                        BEFORE
+                                                    </p>
+
                                                     <img src="/uploads/<%= prompt.before_image %>"
                                                         class="w-full h-40 object-cover">
+
                                                 </div>
 
+                                                <!-- After Video -->
                                                 <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
-                                                    <p class="text-[10px] text-center bg-cyan-900">AFTER</p>
-                                                    <img src="/uploads/<%= prompt.after_image %>"
-                                                        class="w-full h-40 object-cover">
+
+                                                    <p class="text-[10px] text-center bg-cyan-900">
+                                                        AFTER
+                                                    </p>
+
+                                                    <video src="<%= prompt.after_video %>" controls muted playsinline
+                                                        class="w-full h-40 object-cover bg-black">
+                                                    </video>
+
                                                 </div>
 
                                                 <% } %>

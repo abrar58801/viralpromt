@@ -171,9 +171,13 @@ body {
     font-size: 0.7rem !important;
   }
 
-  .btn-neon {
-    padding: 8px;
+  .btn_prompt {
+    padding: 8px 15px !important;
   }
+
+  .pr-16 {
+    padding-right: 4rem !important;
+}
 
   .profile_btn {
     padding: 5px 10px;

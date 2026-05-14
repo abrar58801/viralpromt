@@ -74,7 +74,7 @@ document.getElementById('payment-form').onsubmit = async (e) => {
     const data = Object.fromEntries(formData);
 
     try {
-        const response = await fetch('/verify-payment', {
+        const response = await fetch('/verify-payment-bharatPay', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

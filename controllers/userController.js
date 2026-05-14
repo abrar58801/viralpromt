@@ -41,34 +41,48 @@ exports.logout = (req, res) => {
 
 exports.getDashboard = async (req, res) => {
   try {
-    // Current Page
     const page = parseInt(req.query.page) || 1;
-
-    // Prompt Type
     const type = req.query.type || "image";
+    const category = req.query.category || "all";
 
-    // Per Page Limit
     const limit = 6;
-
-    // Offset
     const offset = (page - 1) * limit;
-
     const userId = req.session.user.id;
 
-    // Total Prompts Count
+    // categories
+    const [categories] = await db.query(
+      `SELECT * FROM categories WHERE status = 1 ORDER BY name ASC`
+    );
+
+    let whereClause = `WHERE p.type = ?`;
+    let countWhere = `WHERE type = ?`;
+    let queryParams = [userId, type];
+    let countParams = [type];
+
+    if (category !== "all") {
+      whereClause += ` AND p.category = ?`;
+      countWhere += ` AND category = ?`;
+
+      queryParams.push(category);
+      countParams.push(category);
+    }
+
+    // count
     const [countRows] = await db.query(
       `
       SELECT COUNT(*) as total
       FROM prompts
-      WHERE type = ?
+      ${countWhere}
       `,
-      [type],
+      countParams
     );
 
     const totalPrompts = countRows[0].total;
     const totalPages = Math.ceil(totalPrompts / limit);
 
-    // Prompts + unlock status
+    // prompts
+    queryParams.push(limit, offset);
+
     const [prompts] = await db.query(
       `
       SELECT
@@ -81,25 +95,28 @@ exports.getDashboard = async (req, res) => {
       LEFT JOIN unlocks u
         ON u.prompt_id = p.id
         AND u.user_id = ?
-      WHERE p.type = ?
+      ${whereClause}
       ORDER BY p.id DESC
       LIMIT ? OFFSET ?
       `,
-      [userId, type, limit, offset],
+      queryParams
     );
 
-    // User Data
-    const [userData] = await db.query("SELECT * FROM users WHERE id = ?", [
-      userId,
-    ]);
+    const [userData] = await db.query(
+      `SELECT * FROM users WHERE id = ?`,
+      [userId]
+    );
 
     res.render("dashboard", {
       prompts,
       user: userData[0],
+      categories,
       currentType: type,
+      currentCategory: category,
       currentPage: page,
       totalPages,
     });
+
   } catch (err) {
     console.log(err);
     res.status(500).send("Dashboard Error");
@@ -108,19 +125,38 @@ exports.getDashboard = async (req, res) => {
 
 exports.getPromptDetail = async (req, res) => {
   try {
-    const [prompt] = await db.query("SELECT * FROM prompts WHERE id = ?", [
-      req.params.id,
-    ]);
-    const [unlocked] = await db.query(
-      "SELECT * FROM unlocks WHERE user_id = ? AND prompt_id = ?",
-      [req.session.user.id, req.params.id],
+    const [promptRows] = await db.query(
+      `SELECT prompts.*, categories.name AS category
+       FROM prompts 
+       LEFT JOIN categories ON prompts.category = categories.id 
+       WHERE prompts.id = ?`,
+      [req.params.id]
     );
+
+    if (!promptRows.length) {
+      return res.redirect("/");
+    }
+
+    let isUnlocked = false;
+
+    if (req.session.user) {
+      const [unlocked] = await db.query(
+        `SELECT * FROM unlocks
+         WHERE user_id = ? AND prompt_id = ?`,
+        [req.session.user.id, req.params.id]
+      );
+
+      isUnlocked = unlocked.length > 0;
+    }
+
     res.render("prompt-detail", {
-      prompt: prompt[0],
-      isUnlocked: unlocked.length > 0,
-      user: req.session.user,
+      prompt: promptRows[0],
+      isUnlocked,
+      user: req.session.user || null,
     });
+
   } catch (err) {
+    console.log(err);
     res.status(500).send("Prompt Load Error");
   }
 };
@@ -225,9 +261,9 @@ exports.postUnlockPrompt = async (req, res) => {
     // Deduct Credits
     await connection.query(
       `UPDATE users
-             SET wallet_credits = wallet_credits - ?
+             SET wallet_credits = wallet_credits - ?, remaining_wallet = remaining_wallet - ?
              WHERE id = ?`,
-      [prompt.price_credits, user.id],
+      [prompt.price_credits, prompt.price_credits, user.id],
     );
 
     // Insert Unlock
@@ -418,73 +454,100 @@ exports.getReferEarn = async (req, res) => {
 exports.getMyUnlocks = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    // Prompt Type
     const type = req.query.type || "image";
+    const category = req.query.category || "all";
 
     const limit = 6;
-
     const offset = (page - 1) * limit;
+    const userId = req.session.user.id;
 
-    // User
-    const [userData] = await db.query("SELECT * FROM users WHERE id = ?", [
-      req.session.user.id,
-    ]);
+    // user
+    const [userData] = await db.query(
+      `SELECT * FROM users WHERE id = ?`,
+      [userId]
+    );
 
-    // Total Count
+    // categories
+    const [categories] = await db.query(
+      `SELECT * FROM categories WHERE status = 1 ORDER BY name ASC`
+    );
+
+    let whereClause = `WHERE u.user_id = ? AND p.type = ?`;
+    let params = [userId, type];
+
+    let countWhere = `WHERE u.user_id = ? AND p.type = ?`;
+    let countParams = [userId, type];
+
+    if (category !== "all") {
+      whereClause += ` AND p.category = ?`;
+      countWhere += ` AND p.category = ?`;
+
+      params.push(category);
+      countParams.push(category);
+    }
+
+    // total count
     const [countRows] = await db.query(
-      `SELECT COUNT(*) as total
-             FROM unlocks
-             WHERE user_id = ?`,
-      [req.session.user.id],
+      `
+      SELECT COUNT(*) as total
+      FROM unlocks u
+      JOIN prompts p ON p.id = u.prompt_id
+      ${countWhere}
+      `,
+      countParams
     );
 
     const totalPrompts = countRows[0].total;
-
     const totalPages = Math.ceil(totalPrompts / limit);
 
-    // Unlocked Prompts
+    // prompts
+    params.push(limit, offset);
+
     const [prompts] = await db.query(
-      `SELECT p.*
-             FROM unlocks u
-             JOIN prompts p ON p.id = u.prompt_id
-             WHERE u.user_id = ? AND p.type = ?
-             ORDER BY u.id DESC
-             LIMIT ? OFFSET ?`,
-      [req.session.user.id, type, limit, offset],
+      `
+      SELECT p.*
+      FROM unlocks u
+      JOIN prompts p ON p.id = u.prompt_id
+      ${whereClause}
+      ORDER BY u.id DESC
+      LIMIT ? OFFSET ?
+      `,
+      params
     );
 
     res.render("my-unlocks", {
       prompts,
+      categories,
       currentType: type,
+      currentCategory: category,
       currentPage: page,
       totalPages,
       user: userData[0],
     });
+
   } catch (err) {
     console.log(err);
-
     res.status(500).send("My Unlocks Error");
   }
 };
 
 exports.landingPage = async (req, res) => {
   try {
-    // Prompt Type
     const type = req.query.type || "image";
+    const category = req.query.category || "all";
 
-    // Pagination
     const page = parseInt(req.query.page) || 1;
     const limit = 6;
     const offset = (page - 1) * limit;
 
-    // User
     let user = null;
     let userId = 0;
 
     if (req.session.user) {
-      const [userData] = await db.query("SELECT * FROM users WHERE id = ?", [
-        req.session.user.id,
-      ]);
+      const [userData] = await db.query(
+        `SELECT * FROM users WHERE id = ?`,
+        [req.session.user.id]
+      );
 
       user = userData[0] || null;
 
@@ -493,20 +556,41 @@ exports.landingPage = async (req, res) => {
       }
     }
 
-    // Total Count
+    // categories
+    const [categories] = await db.query(
+      `SELECT * FROM categories WHERE status = 1 ORDER BY name ASC`
+    );
+
+    let whereClause = `WHERE p.type = ?`;
+    let countWhere = `WHERE type = ?`;
+
+    let queryParams = [userId, type];
+    let countParams = [type];
+
+    if (category !== "all") {
+      whereClause += ` AND p.category = ?`;
+      countWhere += ` AND category = ?`;
+
+      queryParams.push(category);
+      countParams.push(category);
+    }
+
+    // count
     const [countRows] = await db.query(
       `
       SELECT COUNT(*) as total
       FROM prompts
-      WHERE type = ?
+      ${countWhere}
       `,
-      [type],
+      countParams
     );
 
     const totalPrompts = countRows[0].total;
     const totalPages = Math.ceil(totalPrompts / limit);
 
-    // Prompts + unlock status
+    // prompts
+    queryParams.push(limit, offset);
+
     const [prompts] = await db.query(
       `
       SELECT
@@ -519,26 +603,28 @@ exports.landingPage = async (req, res) => {
       LEFT JOIN unlocks u
         ON u.prompt_id = p.id
         AND u.user_id = ?
-      WHERE p.type = ?
+      ${whereClause}
       ORDER BY p.id DESC
       LIMIT ? OFFSET ?
       `,
-      [userId, type, limit, offset],
+      queryParams
     );
 
-    // Settings
     const [settings] = await db.query(
-      "SELECT * FROM site_settings ORDER BY id DESC LIMIT 1",
+      `SELECT * FROM site_settings ORDER BY id DESC LIMIT 1`
     );
 
     res.render("landing", {
       prompts,
+      categories,
       currentType: type,
+      currentCategory: category,
       currentPage: page,
       totalPages,
       user,
       settings: settings[0] || null,
     });
+
   } catch (err) {
     console.log(err);
     res.status(500).send("Landing Page Error");
@@ -752,18 +838,24 @@ exports.getWithdraw = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const [users] = await db.query(`SELECT * FROM users WHERE id = ?`, [
-      req.session.user.id,
-    ]);
+    const [users] = await db.query(
+      `SELECT * FROM users WHERE id = ?`,
+      [req.session.user.id]
+    );
 
-    const user = users[0];
+    if (!users.length) {
+      return res.redirect("/login");
+    }
 
     res.render("withdraw", {
-      user,
+      user: users[0],
+      error: null,
+      success: null,
     });
+
   } catch (err) {
     console.log(err);
-    res.status(500).send("Withdraw Page Error");
+    res.send("Error");
   }
 };
 
@@ -774,12 +866,7 @@ exports.postWithdraw = async (req, res) => {
     }
 
     const { amount, upi_id } = req.body;
-
     const withdrawAmount = Number(amount);
-
-    if (!withdrawAmount || withdrawAmount <= 0) {
-      return res.send("Invalid amount");
-    }
 
     const [users] = await db.query(`SELECT * FROM users WHERE id = ?`, [
       req.session.user.id,
@@ -790,22 +877,33 @@ exports.postWithdraw = async (req, res) => {
     }
 
     const user = users[0];
+    const userEarnBalanceByRefer = user.wallet_credits - user.remaining_wallet;
 
-    if (withdrawAmount > user.wallet_credits) {
-      return res.send("Insufficient wallet balance");
+    if (!withdrawAmount || withdrawAmount <= 0) {
+      return res.render("withdraw", {
+        user,
+        error: "Please enter a valid withdrawal amount.",
+        success: null,
+      });
+    }
+
+    if (withdrawAmount > userEarnBalanceByRefer) {
+      return res.render("withdraw", {
+        user,
+        error: `Insufficient withdrawable balance. Your available referral earnings balance is ${userEarnBalanceByRefer}.`,
+        success: null,
+      });
     }
 
     const orderId = "WD" + Date.now();
 
-    // Deduct Wallet
     await db.query(
       `UPDATE users
        SET wallet_credits = wallet_credits - ?, upi_id = ?
        WHERE id = ?`,
-      [withdrawAmount, upi_id, user.id],
+      [withdrawAmount, upi_id, user.id]
     );
 
-    // Transaction
     await db.query(
       `INSERT INTO transactions
       (
@@ -818,17 +916,24 @@ exports.postWithdraw = async (req, res) => {
         type
       )
       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [orderId, user.id, withdrawAmount, 0, upi_id, "pending", "withdraw"],
+      [orderId, user.id, withdrawAmount, 0, upi_id, "pending", "withdraw"]
     );
 
-    return res.send(`
-      <script>
-        alert('Withdrawal request submitted successfully');
-        window.location.href='/transactions';
-      </script>
-    `);
+    const [updatedUsers] = await db.query(`SELECT * FROM users WHERE id = ?`, [
+      user.id,
+    ]);
+
+    return res.render("withdraw", {
+      user: updatedUsers[0],
+      error: null,
+      success: "Withdrawal request submitted successfully.",
+    });
   } catch (err) {
     console.log(err);
-    res.status(500).send("Withdraw Error");
+    res.render("withdraw", {
+      user: req.session.user,
+      error: "Something went wrong. Please try again.",
+      success: null,
+    });
   }
 };

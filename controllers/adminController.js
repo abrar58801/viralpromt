@@ -291,18 +291,15 @@ exports.postAddPrompt = (req, res) => {
         const {
           title,
           description,
-
+          category,
           price_credits,
           type,
           views,
-
+          media_type,
           before_video,
           after_video,
           how_to_use
         } = req.body;
-
-        // Category
-        const category = req.body.category || "Trending";
 
         // Default Values
         let before_image = null;
@@ -317,7 +314,7 @@ exports.postAddPrompt = (req, res) => {
         // IMAGE TYPE
         // =========================
 
-        if (type === "image") {
+        if (type === "image" || (type === "video" && media_type === "image")) {
           // Check Files
           if (
             !req.files ||
@@ -342,7 +339,7 @@ exports.postAddPrompt = (req, res) => {
         // VIDEO TYPE
         // =========================
 
-        if (type === "video") {
+        if (type === "video" && media_type === "video") {
           // Check URLs
           if (!before_video || !after_video) {
             return res.send(
@@ -368,39 +365,34 @@ exports.postAddPrompt = (req, res) => {
                     title,
                     description,
                     category,
-
                     before_image,
                     after_image,
-
                     before_video,
                     after_video,
-
                     price_credits,
                     type,
                     fake_views,
-
-                    how_to_use
+                    how_to_use,
+                    media_type
 
                 )
 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `;
 
         await db.query(sql, [
           title,
           description,
           category,
-
           before_image,
           after_image,
-
           finalBeforeVideo,
           finalAfterVideo,
-
           price_credits,
           type,
           views,
           how_to_use,
+          media_type || "image",
         ]);
 
         // Success
@@ -414,30 +406,7 @@ exports.postAddPrompt = (req, res) => {
   );
 };
 
-// --- 4. Edit Prompt Page ---
-exports.editPromptPage = async (req, res) => {
-  try {
-    const [prompts] = await db.query(
-      `SELECT * FROM prompts
-             WHERE id = ?`,
-      [req.params.id],
-    );
-
-    if (prompts.length === 0) {
-      return res.redirect("/admin/prompts");
-    }
-
-    res.render("admin/edit-prompt", {
-      prompt: prompts[0],
-    });
-  } catch (err) {
-    console.log(err);
-
-    res.status(500).send("Edit Prompt Error");
-  }
-};
-
-// --- 5. Update Prompt ---
+// --- 4. Update Prompt ---
 exports.updatePrompt = (req, res) => {
   upload(
     req,
@@ -455,14 +424,14 @@ exports.updatePrompt = (req, res) => {
         const {
           title,
           description,
-
           price_credits,
           type,
           views,
-
           before_video,
           after_video,
           how_to_use,
+          category,
+          media_type,
         } = req.body;
 
         // =========================
@@ -488,18 +457,15 @@ exports.updatePrompt = (req, res) => {
         // =========================
 
         let before_image = oldPrompt[0].before_image;
-
         let after_image = oldPrompt[0].after_image;
-
         let finalBeforeVideo = oldPrompt[0].before_video;
-
         let finalAfterVideo = oldPrompt[0].after_video;
 
         // =========================
         // IMAGE TYPE
         // =========================
 
-        if (type === "image") {
+        if (type === "image" || (type === "video" && media_type === "image")) {
           // Before Image
           if (req.files && req.files["before_image"]) {
             before_image = req.files["before_image"][0].filename;
@@ -520,7 +486,7 @@ exports.updatePrompt = (req, res) => {
         // VIDEO TYPE
         // =========================
 
-        if (type === "video") {
+        if (type === "video" && media_type === "video") {
           // Video URLs
           finalBeforeVideo = before_video || oldPrompt[0].before_video;
 
@@ -543,34 +509,32 @@ exports.updatePrompt = (req, res) => {
 
                     title = ?,
                     description = ?,
-
                     before_image = ?,
                     after_image = ?,
-
                     before_video = ?,
                     after_video = ?,
-
                     price_credits = ?,
                     type = ?,
                     fake_views = ?,
-                    how_to_use = ?
+                    how_to_use = ?,
+                    category = ?,
+                    media_type = ?
 
                 WHERE id = ?
                 `,
           [
             title,
             description,
-
             before_image,
             after_image,
-
             finalBeforeVideo,
             finalAfterVideo,
-
             price_credits,
             type,
             views,
             how_to_use,
+            category,
+            media_type || "image",
             req.params.id,
           ],
         );
@@ -583,6 +547,32 @@ exports.updatePrompt = (req, res) => {
       }
     },
   );
+};
+
+// --- 5. Edit Prompt Page ---
+exports.editPromptPage = async (req, res) => {
+  try {
+    const [prompts] = await db.query(
+      `SELECT * FROM prompts WHERE id = ?`,
+      [req.params.id]
+    );
+
+    const [categories] = await db.query(
+      `SELECT * FROM categories WHERE status = 1 ORDER BY id DESC`
+    );
+
+    if (!prompts.length) {
+      return res.redirect("/admin/prompts");
+    }
+
+    res.render("admin/edit-prompt", {
+      prompt: prompts[0],
+      categories,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("Edit Prompt Error");
+  }
 };
 
 // --- 6. Delete Prompt ---
@@ -613,8 +603,19 @@ exports.deletePrompt = async (req, res) => {
 };
 
 // Add Prompt Page
-exports.addPromptPage = (req, res) => {
-  res.render("admin/add-prompt");
+exports.addPromptPage = async (req, res) => {
+  try {
+    const [categories] = await db.query(
+      `SELECT * FROM categories WHERE status = 1 ORDER BY id DESC`
+    );
+
+    res.render("admin/add-prompt", {
+      categories,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("Add Prompt Page Error");
+  }
 };
 
 // Prompt List
@@ -642,21 +643,19 @@ exports.getPrompts = async (req, res) => {
 
     // Prompts
     const [prompts] = await db.query(
-      `SELECT *
+      `SELECT prompts.*, categories.name as category
                  FROM prompts
-                 WHERE title LIKE ?
-                 ORDER BY id DESC
+                 LEFT JOIN categories ON categories.id = prompts.category
+                 WHERE prompts.title LIKE ?
+                 ORDER BY prompts.id DESC
                  LIMIT ? OFFSET ?`,
       [`%${search}%`, limit, offset],
     );
 
     res.render("admin/prompts", {
       prompts,
-
       currentPage: page,
-
       totalPages,
-
       search,
     });
   } catch (err) {
@@ -1207,5 +1206,126 @@ exports.postChangePassword = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send("Password Change Error");
+  }
+};
+
+// Add Category Page
+exports.addCategoryPage = (req, res) => {
+  res.render("admin/add-category");
+};
+
+// Category List
+exports.getCategories = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+    const search = req.query.search || "";
+
+    const [countRows] = await db.query(
+      `SELECT COUNT(*) as total
+       FROM categories
+       WHERE name LIKE ?`,
+      [`%${search}%`]
+    );
+
+    const totalCategories = countRows[0].total;
+    const totalPages = Math.ceil(totalCategories / limit);
+
+    const [categories] = await db.query(
+      `SELECT *
+       FROM categories
+       WHERE name LIKE ?
+       ORDER BY id DESC
+       LIMIT ? OFFSET ?`,
+      [`%${search}%`, limit, offset]
+    );
+
+    res.render("admin/categories", {
+      categories,
+      currentPage: page,
+      totalPages,
+      search,
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("Category Page Error");
+  }
+};
+
+// Add Category
+exports.postAddCategory = async (req, res) => {
+  try {
+    const { name, status } = req.body;
+
+    if (!name) {
+      return res.send("Category name required");
+    }
+
+    await db.query(
+      `INSERT INTO categories (name, status)
+       VALUES (?, ?)`,
+      [name, status || 1]
+    );
+
+    res.redirect("/admin/categories");
+  } catch (err) {
+    console.log(err);
+    res.send("Add Category Error");
+  }
+};
+
+// Edit Category Page
+exports.editCategoryPage = async (req, res) => {
+  try {
+    const [categories] = await db.query(
+      `SELECT * FROM categories WHERE id = ?`,
+      [req.params.id]
+    );
+
+    if (!categories.length) {
+      return res.redirect("/admin/categories");
+    }
+
+    res.render("admin/edit-category", {
+      category: categories[0],
+    });
+  } catch (err) {
+    console.log(err);
+    res.send("Edit Category Error");
+  }
+};
+
+// Update Category
+exports.updateCategory = async (req, res) => {
+  try {
+    const { name, status } = req.body;
+
+    await db.query(
+      `UPDATE categories
+       SET name = ?, status = ?
+       WHERE id = ?`,
+      [name, status, req.params.id]
+    );
+
+    res.redirect("/admin/categories");
+  } catch (err) {
+    console.log(err);
+    res.send("Update Category Error");
+  }
+};
+
+// Delete Category
+exports.deleteCategory = async (req, res) => {
+  try {
+    await db.query(
+      `DELETE FROM categories WHERE id = ?`,
+      [req.params.id]
+    );
+
+    res.redirect("/admin/categories");
+  } catch (err) {
+    console.log(err);
+    res.send("Delete Category Error");
   }
 };

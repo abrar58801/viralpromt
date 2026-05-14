@@ -66,21 +66,39 @@
                 </section>
 
                 <!-- Category Switcher -->
-                <div class="flex justify-center space-x-4 mb-12">
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-12">
 
-                    <a href="/?type=image" class="btn_prompt <%= currentType === 'image'
+                    <a href="/?type=image&category=all" class="btn_prompt <%= currentType === 'image'
             ? 'btn-neon'
             : 'border border-white/20 px-8 py-2 rounded-full' %>">
 
                         IMAGE PROMPT
                     </a>
 
-                    <a href="/?type=video" class="btn_prompt <%= currentType === 'video'
+                    <a href="/?type=video&category=all" class="btn_prompt <%= currentType === 'video'
             ? 'btn-neon'
             : 'border border-white/20 px-8 py-2 rounded-full' %>">
 
                         VIDEO PROMPT
                     </a>
+
+                    <div class="relative">
+                        <select id="categoryFilter"
+                            class="appearance-none btn_prompt border border-cyan-500/40 bg-black/60 text-white px-8 pr-16 py-3 rounded-full uppercase tracking-wide cursor-pointer outline-none hover:border-cyan-400 transition-all">
+
+                            <option value="all">All Categories</option>
+
+                            <% categories.forEach(category=> { %>
+                                <option value="<%= category.id %>" <%=currentCategory==category.id ? 'selected' : '' %>>
+                                    <%= category.name %>
+                                </option>
+                                <% }) %>
+                        </select>
+
+                        <span class="absolute right-6 top-1/2 -translate-y-1/2 text-cyan-400 pointer-events-none">
+                            ▼
+                        </span>
+                    </div>
 
                 </div>
 
@@ -132,43 +150,61 @@
 
                                         <% } %>
 
-                                            <!-- ================= -->
-                                            <!-- VIDEO PROMPT -->
-                                            <!-- ================= -->
+                                            <% if(prompt.type==='video' && prompt.media_type==='image' ) { %>
 
-                                            <% if(prompt.type==='video' ) { %>
-
-                                                <!-- Before -->
                                                 <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
-
-                                                    <p class="text-[10px] text-center bg-gray-800">
-
-                                                        BEFORE
-
-                                                    </p>
-
-                                                    <video src="<%= prompt.before_video %>" controls muted playsinline
-                                                        class="w-full h-40 object-cover bg-black">
-                                                    </video>
-
+                                                    <p class="text-[10px] text-center bg-gray-800">BEFORE</p>
+                                                    <img src="/uploads/<%= prompt.before_image %>"
+                                                        class="w-full h-40 object-cover">
                                                 </div>
 
-                                                <!-- After -->
                                                 <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
-
-                                                    <p class="text-[10px] text-center bg-cyan-900">
-
-                                                        AFTER
-
-                                                    </p>
-
-                                                    <video src="<%= prompt.after_video %>" controls muted playsinline
-                                                        class="w-full h-40 object-cover bg-black">
-                                                    </video>
-
+                                                    <p class="text-[10px] text-center bg-cyan-900">AFTER</p>
+                                                    <img src="/uploads/<%= prompt.after_image %>"
+                                                        class="w-full h-40 object-cover">
                                                 </div>
 
                                                 <% } %>
+
+                                                    <!-- ================= -->
+                                                    <!-- VIDEO PROMPT -->
+                                                    <!-- ================= -->
+
+                                                    <% if(prompt.type==='video' && prompt.media_type==='video' ) { %>
+
+                                                        <!-- Before -->
+                                                        <div
+                                                            class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                                            <p class="text-[10px] text-center bg-gray-800">
+
+                                                                BEFORE
+
+                                                            </p>
+
+                                                            <video src="<%= prompt.before_video %>" controls muted
+                                                                playsinline class="w-full h-40 object-cover bg-black">
+                                                            </video>
+
+                                                        </div>
+
+                                                        <!-- After -->
+                                                        <div
+                                                            class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                                            <p class="text-[10px] text-center bg-cyan-900">
+
+                                                                AFTER
+
+                                                            </p>
+
+                                                            <video src="<%= prompt.after_video %>" controls muted
+                                                                playsinline class="w-full h-40 object-cover bg-black">
+                                                            </video>
+
+                                                        </div>
+
+                                                        <% } %>
 
                                 </div>
 
@@ -188,7 +224,7 @@
 
                                         <% if(user) { %>
 
-                                            <% if(prompt.is_unlocked == 1) { %>
+                                            <% if(prompt.is_unlocked==1) { %>
 
                                                 <a href="/prompt/<%= prompt.id %>"
                                                     class="bg-green-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
@@ -196,26 +232,25 @@
                                                     View Prompt
                                                 </a>
 
-                                            <% } else { %>
+                                                <% } else { %>
 
-                                                <button
-                                                    onclick="unlockPrompt('<%= prompt.id %>')"
-                                                    class="bg-cyan-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
+                                                    <button onclick="unlockPrompt('<%= prompt.id %>')"
+                                                        class="bg-cyan-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
 
-                                                    Unlock (<%= prompt.price_credits %> Credits)
-                                                </button>
+                                                        Unlock (<%= prompt.price_credits %> Credits)
+                                                    </button>
 
-                                            <% } %>
+                                                    <% } %>
 
-                                        <% } else { %>
+                                                        <% } else { %>
 
-                                            <a href="/login"
-                                                class="bg-cyan-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
+                                                            <a href="/login"
+                                                                class="bg-cyan-500 text-black px-4 py-1 rounded-full font-bold text-sm shadow-lg">
 
-                                                Login To Unlock
-                                            </a>
+                                                                Login To Unlock
+                                                            </a>
 
-                                        <% } %>
+                                                            <% } %>
 
                                     </div>
 
@@ -260,7 +295,7 @@
                         <!-- Previous -->
                         <% if (currentPage> 1) { %>
 
-                            <a href="/?type=<%= currentType %>&page=<%= currentPage - 1 %>"
+                            <a href="/?type=<%= currentType %>&category=<%= currentCategory %>&page=<%= currentPage - 1 %>"
                                 class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
 
                                 ← Back
@@ -287,7 +322,7 @@
                                     <!-- Next -->
                                     <% if (currentPage < totalPages) { %>
 
-                                        <a href="/?type=<%= currentType %>&page=<%= currentPage + 1 %>"
+                                        <a href="/?type=<%= currentType %>&category=<%= currentCategory %>&page=<%= currentPage + 1 %>"
                                             class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
 
                                             Next →
@@ -408,5 +443,14 @@
                 </script>
 
                 <% } %>
+
+                    <script>
+                        document.getElementById('categoryFilter').addEventListener('change', function () {
+                            const type = '<%= currentType %>';
+                            const category = this.value;
+
+                            window.location.href = `/?type=${type}&category=${category}`;
+                        });
+                    </script>
 
                     <%- include('partials/footer') %>

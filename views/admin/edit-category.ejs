@@ -1,0 +1,41 @@
+<%- include('header') %>
+
+<div class="flex flex-col md:flex-row min-h-screen bg-black">
+    <%- include('sidebar') %>
+
+    <main class="flex-1 p-6 md:p-10">
+
+        <h1 class="text-2xl font-bold text-white uppercase mb-8">
+            Edit <span class="text-red-500">Category</span>
+        </h1>
+
+        <div class="bg-[#111] p-8 border border-white/5 rounded-2xl">
+            <form action="/admin/update-category/<%= category.id %>" method="POST" class="space-y-6">
+
+                <input
+                    type="text"
+                    name="name"
+                    value="<%= category.name %>"
+                    required
+                    class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white">
+
+                <select
+                    name="status"
+                    class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white">
+
+                    <option value="1" <%= category.status == 1 ? 'selected' : '' %>>Active</option>
+                    <option value="0" <%= category.status == 0 ? 'selected' : '' %>>Inactive</option>
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold uppercase">
+                    Update Category
+                </button>
+
+            </form>
+        </div>
+
+    </main>
+</div>

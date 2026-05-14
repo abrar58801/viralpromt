@@ -28,6 +28,14 @@
                     <form action="/admin/update-prompt/<%= prompt.id %>" method="POST" enctype="multipart/form-data"
                         class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+                        <select name="category"
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white">
+                            <% categories.forEach(c=> { %>
+                                <option value="<%= c.id %>" <%=prompt.category===c.id ? 'selected' : '' %>>
+                                    <%= c.name %>
+                                </option>
+                                <% }) %>
+                        </select>
 
                         <!-- Title -->
                         <input type="text" name="title" value="<%= prompt.title %>" required placeholder="Title"
@@ -44,17 +52,25 @@
                             class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-red-500 transition-all">
 
                             <option value="image" <%=prompt.type==='image' ? 'selected' : '' %>>
-
                                 Image
-
                             </option>
 
                             <option value="video" <%=prompt.type==='video' ? 'selected' : '' %>>
-
                                 Video
-
                             </option>
 
+                        </select>
+
+                        <select name="media_type" id="mediaType"
+                            class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white">
+
+                            <option value="video" <%=prompt.media_type==='video' ? 'selected' : '' %>>
+                                Video URL
+                            </option>
+
+                            <option value="image" <%=prompt.media_type==='image' ? 'selected' : '' %>>
+                                Image Upload
+                            </option>
                         </select>
 
                         <!-- Views -->
@@ -74,28 +90,24 @@
 
                                 </label>
 
-                                <!-- IMAGE -->
-                                <div id="beforeImageBox" class="<%= prompt.type === 'video' ? 'hidden' : '' %>">
+                                <div id="beforeImageBox"
+                                    class="<%= (prompt.type === 'image' || (prompt.type === 'video' && prompt.media_type === 'image')) ? '' : 'hidden' %>">
 
                                     <% if(prompt.before_image) { %>
-
                                         <img src="/uploads/<%= prompt.before_image %>"
                                             class="w-full h-32 object-cover rounded-xl mb-4 border border-white/10">
-
                                         <% } %>
 
                                             <input type="file" name="before_image"
                                                 class="text-[10px] text-gray-400 w-full">
-
                                 </div>
 
-                                <!-- VIDEO -->
-                                <div id="beforeVideoBox" class="<%= prompt.type === 'image' ? 'hidden' : '' %>">
+                                <div id="beforeVideoBox"
+                                    class="<%= (prompt.type === 'video' && prompt.media_type === 'video') ? '' : 'hidden' %>">
 
                                     <input type="url" name="before_video" value="<%= prompt.before_video || '' %>"
                                         placeholder="Before Video URL"
                                         class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none">
-
                                 </div>
 
                             </div>
@@ -109,28 +121,24 @@
 
                                 </label>
 
-                                <!-- IMAGE -->
-                                <div id="afterImageBox" class="<%= prompt.type === 'video' ? 'hidden' : '' %>">
+                                <div id="afterImageBox"
+                                    class="<%= (prompt.type === 'image' || (prompt.type === 'video' && prompt.media_type === 'image')) ? '' : 'hidden' %>">
 
                                     <% if(prompt.after_image) { %>
-
                                         <img src="/uploads/<%= prompt.after_image %>"
                                             class="w-full h-32 object-cover rounded-xl mb-4 border border-white/10">
-
                                         <% } %>
 
                                             <input type="file" name="after_image"
                                                 class="text-[10px] text-gray-400 w-full">
-
                                 </div>
 
-                                <!-- VIDEO -->
-                                <div id="afterVideoBox" class="<%= prompt.type === 'image' ? 'hidden' : '' %>">
+                                <div id="afterVideoBox"
+                                    class="<%= (prompt.type === 'video' && prompt.media_type === 'video') ? '' : 'hidden' %>">
 
                                     <input type="url" name="after_video" value="<%= prompt.after_video || '' %>"
                                         placeholder="After Video URL"
                                         class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none">
-
                                 </div>
 
                             </div>
@@ -167,88 +175,48 @@
     </div>
 
     <script>
+        const promptType = document.getElementById('promptType');
+        const mediaType = document.getElementById('mediaType');
 
-        const promptType =
-            document.getElementById(
-                'promptType'
-            );
+        const beforeImageBox = document.getElementById('beforeImageBox');
+        const afterImageBox = document.getElementById('afterImageBox');
+        const beforeVideoBox = document.getElementById('beforeVideoBox');
+        const afterVideoBox = document.getElementById('afterVideoBox');
 
-        const beforeImageBox =
-            document.getElementById(
-                'beforeImageBox'
-            );
+        function toggleFields() {
+            const type = promptType.value;
+            const media = mediaType.value;
 
-        const afterImageBox =
-            document.getElementById(
-                'afterImageBox'
-            );
+            if (type === 'image') {
+                mediaType.classList.add('hidden');
 
-        const beforeVideoBox =
-            document.getElementById(
-                'beforeVideoBox'
-            );
+                beforeImageBox.classList.remove('hidden');
+                afterImageBox.classList.remove('hidden');
 
-        const afterVideoBox =
-            document.getElementById(
-                'afterVideoBox'
-            );
+                beforeVideoBox.classList.add('hidden');
+                afterVideoBox.classList.add('hidden');
+            }
+            else {
+                mediaType.classList.remove('hidden');
 
-        promptType.addEventListener(
-            'change',
-            function () {
+                if (media === 'image') {
+                    beforeImageBox.classList.remove('hidden');
+                    afterImageBox.classList.remove('hidden');
 
-                // VIDEO
-                if (
-                    this.value === 'video'
-                ) {
+                    beforeVideoBox.classList.add('hidden');
+                    afterVideoBox.classList.add('hidden');
+                } else {
+                    beforeImageBox.classList.add('hidden');
+                    afterImageBox.classList.add('hidden');
 
-                    beforeImageBox
-                        .classList.add(
-                            'hidden'
-                        );
-
-                    afterImageBox
-                        .classList.add(
-                            'hidden'
-                        );
-
-                    beforeVideoBox
-                        .classList.remove(
-                            'hidden'
-                        );
-
-                    afterVideoBox
-                        .classList.remove(
-                            'hidden'
-                        );
-
+                    beforeVideoBox.classList.remove('hidden');
+                    afterVideoBox.classList.remove('hidden');
                 }
+            }
+        }
 
-                // IMAGE
-                else {
+        promptType.addEventListener('change', toggleFields);
+        mediaType.addEventListener('change', toggleFields);
 
-                    beforeImageBox
-                        .classList.remove(
-                            'hidden'
-                        );
-
-                    afterImageBox
-                        .classList.remove(
-                            'hidden'
-                        );
-
-                    beforeVideoBox
-                        .classList.add(
-                            'hidden'
-                        );
-
-                    afterVideoBox
-                        .classList.add(
-                            'hidden'
-                        );
-
-                }
-
-            });
-
+        toggleFields();
     </script>

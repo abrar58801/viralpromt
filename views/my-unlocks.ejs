@@ -22,22 +22,39 @@
 
                 </div>
 
-                <!-- Category Switcher -->
-                <div class="flex justify-center space-x-4 mb-12">
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-12">
 
-                    <a href="/my-unlocks-list/?type=image" class="btn_prompt <%= currentType === 'image'
+                    <a href="/my-unlocks-list?type=image&category=all" class="btn_prompt <%= currentType === 'image'
             ? 'btn-neon'
             : 'border border-white/20 px-8 py-2 rounded-full' %>">
 
                         IMAGE PROMPT
                     </a>
 
-                    <a href="/my-unlocks-list/?type=video" class="btn_prompt <%= currentType === 'video'
+                    <a href="/my-unlocks-list?type=video&category=all" class="btn_prompt <%= currentType === 'video'
             ? 'btn-neon'
             : 'border border-white/20 px-8 py-2 rounded-full' %>">
 
                         VIDEO PROMPT
                     </a>
+
+                    <div class="relative">
+                        <select id="categoryFilter"
+                            class="appearance-none btn_prompt border border-cyan-500/40 bg-black/60 text-white px-8 pr-16 py-3 rounded-full uppercase tracking-wide cursor-pointer outline-none hover:border-cyan-400 transition-all">
+
+                            <option value="all">All Categories</option>
+
+                            <% categories.forEach(category=> { %>
+                                <option value="<%= category.id %>" <%=currentCategory==category.id ? 'selected' : '' %>>
+                                    <%= category.name %>
+                                </option>
+                                <% }) %>
+                        </select>
+
+                        <span class="absolute right-6 top-1/2 -translate-y-1/2 text-cyan-400 pointer-events-none">
+                            ▼
+                        </span>
+                    </div>
 
                 </div>
 
@@ -89,43 +106,61 @@
 
                                         <% } %>
 
-                                            <!-- ================= -->
-                                            <!-- VIDEO PROMPT -->
-                                            <!-- ================= -->
+                                            <% if(prompt.type==='video' && prompt.media_type==='image' ) { %>
 
-                                            <% if(prompt.type==='video' ) { %>
-
-                                                <!-- Before -->
                                                 <div class="w-1/2 rounded-lg overflow-hidden border border-white/10">
-
-                                                    <p class="text-[10px] text-center bg-gray-800">
-
-                                                        BEFORE
-
-                                                    </p>
-
-                                                    <video src="<%= prompt.before_video %>" controls muted playsinline
-                                                        class="w-full h-40 object-cover bg-black">
-                                                    </video>
-
+                                                    <p class="text-[10px] text-center bg-gray-800">BEFORE</p>
+                                                    <img src="/uploads/<%= prompt.before_image %>"
+                                                        class="w-full h-40 object-cover">
                                                 </div>
 
-                                                <!-- After -->
                                                 <div class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
-
-                                                    <p class="text-[10px] text-center bg-cyan-900">
-
-                                                        AFTER
-
-                                                    </p>
-
-                                                    <video src="<%= prompt.after_video %>" controls muted playsinline
-                                                        class="w-full h-40 object-cover bg-black">
-                                                    </video>
-
+                                                    <p class="text-[10px] text-center bg-cyan-900">AFTER</p>
+                                                    <img src="/uploads/<%= prompt.after_image %>"
+                                                        class="w-full h-40 object-cover">
                                                 </div>
 
                                                 <% } %>
+
+                                                    <!-- ================= -->
+                                                    <!-- VIDEO PROMPT -->
+                                                    <!-- ================= -->
+
+                                                    <% if(prompt.type==='video' && prompt.media_type==='video' ) { %>
+
+                                                        <!-- Before -->
+                                                        <div
+                                                            class="w-1/2 rounded-lg overflow-hidden border border-white/10">
+
+                                                            <p class="text-[10px] text-center bg-gray-800">
+
+                                                                BEFORE
+
+                                                            </p>
+
+                                                            <video src="<%= prompt.before_video %>" controls muted
+                                                                playsinline class="w-full h-40 object-cover bg-black">
+                                                            </video>
+
+                                                        </div>
+
+                                                        <!-- After -->
+                                                        <div
+                                                            class="w-1/2 rounded-lg overflow-hidden border border-cyan-500/50">
+
+                                                            <p class="text-[10px] text-center bg-cyan-900">
+
+                                                                AFTER
+
+                                                            </p>
+
+                                                            <video src="<%= prompt.after_video %>" controls muted
+                                                                playsinline class="w-full h-40 object-cover bg-black">
+                                                            </video>
+
+                                                        </div>
+
+                                                        <% } %>
 
                                 </div>
 
@@ -209,7 +244,7 @@
                         <!-- Previous -->
                         <% if (currentPage> 1) { %>
 
-                            <a href="/my-unlocks?page=<%= currentPage - 1 %>"
+                            <a href="/my-unlocks-list?type=<%= currentType %>&category=<%= currentCategory %>&page=<%= currentPage - 1 %>"
                                 class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
 
                                 ← Back
@@ -227,7 +262,7 @@
                                 <!-- Next -->
                                 <% if (currentPage < totalPages) { %>
 
-                                    <a href="/my-unlocks?page=<%= currentPage + 1 %>"
+                                    <a href="/my-unlocks-list?type=<%= currentType %>&category=<%= currentCategory %>&page=<%= currentPage + 1 %>"
                                         class="px-5 py-2 border border-white/10 rounded-xl hover:bg-white/5 transition">
 
                                         Next →
@@ -242,5 +277,14 @@
             </main>
 
     </div>
+
+    <script>
+        document.getElementById('categoryFilter').addEventListener('change', function () {
+            const type = '<%= currentType %>';
+            const category = this.value;
+
+            window.location.href = `/my-unlocks-list?type=${type}&category=${category}`;
+        });
+    </script>
 
     <%- include('partials/footer') %>

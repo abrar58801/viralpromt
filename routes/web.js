@@ -93,8 +93,16 @@ router.post("/unlock", isAuthenticated, userController.postUnlockPrompt);
 router.get("/add-fund", isAuthenticated, userController.getAddFund);
 
 // Verify Payment
-router.post("/verify-payment-paytm", isAuthenticated, paymentController.verifyUTR);
-router.post("/verify-payment-bharatPay", isAuthenticated, paymentController.verifyBharatPayUTR);
+router.post(
+  "/verify-payment-paytm",
+  isAuthenticated,
+  paymentController.verifyUTR,
+);
+router.post(
+  "/verify-payment-bharatPay",
+  isAuthenticated,
+  paymentController.verifyBharatPayUTR,
+);
 
 // Refer & Earn
 router.get("/refer-earn", userController.getReferEarn);
@@ -109,8 +117,16 @@ router.get("/how-to-use", userController.getHowToUse);
 router.get("/withdraw", isAuthenticated, userController.getWithdraw);
 router.post("/withdraw", isAuthenticated, userController.postWithdraw);
 
-router.get("/change-password", isAuthenticated, authController.getChangePassword);
-router.post("/change-password", isAuthenticated, authController.postChangePassword);
+router.get(
+  "/change-password",
+  isAuthenticated,
+  authController.getChangePassword,
+);
+router.post(
+  "/change-password",
+  isAuthenticated,
+  authController.postChangePassword,
+);
 
 // ======================
 // Admin Routes
@@ -176,6 +192,43 @@ router.get(
   "/admin/add-prompt",
   isAdminAuthenticated,
   adminController.addPromptPage,
+);
+
+// Admin Categories
+router.get(
+  "/admin/categories",
+  isAdminAuthenticated,
+  adminController.getCategories,
+);
+
+router.get(
+  "/admin/add-category",
+  isAdminAuthenticated,
+  adminController.addCategoryPage,
+);
+
+router.post(
+  "/admin/add-category",
+  isAdminAuthenticated,
+  adminController.postAddCategory,
+);
+
+router.get(
+  "/admin/edit-category/:id",
+  isAdminAuthenticated,
+  adminController.editCategoryPage,
+);
+
+router.post(
+  "/admin/update-category/:id",
+  isAdminAuthenticated,
+  adminController.updateCategory,
+);
+
+router.get(
+  "/admin/delete-category/:id",
+  isAdminAuthenticated,
+  adminController.deleteCategory,
 );
 
 router.get("/admin/users", isAdminAuthenticated, adminController.getUsers);

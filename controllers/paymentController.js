@@ -101,8 +101,8 @@ exports.verifyUTR = async (req, res) => {
     ) {
       // Add wallet
       await db.query(
-        "UPDATE users SET wallet_credits = wallet_credits + ? WHERE id = ?",
-        [amount, userId]
+        "UPDATE users SET wallet_credits = wallet_credits + ?, remaining_wallet = remaining_wallet + ? WHERE id = ?",
+        [amount, amount, userId]
       );
 
       // Deposit log
@@ -337,10 +337,10 @@ exports.verifyBharatPayUTR = async (req, res) => {
     await db.query(
       `
       UPDATE users
-      SET wallet_credits = wallet_credits + ?
+      SET wallet_credits = wallet_credits + ?, remaining_wallet = remaining_wallet + ?
       WHERE id = ?
       `,
-      [amount, userId]
+      [amount, amount, userId]
     );
 
     // Deposit transaction

@@ -951,7 +951,6 @@ exports.updateWallet = async (req, res) => {
       if (finalWallet < 0) {
         finalWallet = 0;
       }
-      
     } else {
       finalWallet = currentWallet + updateAmount;
       remainingWallet = amount;
@@ -966,30 +965,30 @@ exports.updateWallet = async (req, res) => {
     );
 
     // Transaction history
-    const orderId = "ADMIN" + Date.now();
+    // const orderId = "ADMIN" + Date.now();
 
-    await db.query(
-      `INSERT INTO transactions
-  (
-    order_id,
-    user_id,
-    amount,
-    credits_added,
-    utr_number,
-    status,
-    type
-  )
-  VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [
-        orderId,
-        user_id,
-        updateAmount,
-        updateAmount,
-        "ADMIN-" + action_type.toUpperCase(),
-        "success",
-        action_type === "deduct" ? "withdraw" : "deposit",
-      ],
-    );
+    // await db.query(
+    //   `INSERT INTO transactions
+    //   (
+    //     order_id,
+    //     user_id,
+    //     amount,
+    //     credits_added,
+    //     utr_number,
+    //     status,
+    //     type
+    //   )
+    //   VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    //       [
+    //         orderId,
+    //         user_id,
+    //         updateAmount,
+    //         updateAmount,
+    //         "ADMIN-" + action_type.toUpperCase(),
+    //         "success",
+    //         action_type === "deduct" ? "withdraw" : "deposit",
+    //       ],
+    //     );
 
     return res.redirect("/admin/users");
   } catch (err) {
